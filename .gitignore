@@ -1,0 +1,9 @@
+.env
+.python-version
+db.sqlite3
+andeschileong/__pycache__
+ciudadespendientes/__pycache__
+Nginx
+docker-compose.yml
+nginx.conf
+
