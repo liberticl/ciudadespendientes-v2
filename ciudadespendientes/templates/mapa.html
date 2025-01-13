@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="map-container">
+    {{ dynamic_content | safe }}
+    <div
+        style="position: absolute; bottom: 15px; right: 5px; width: auto; height: auto;
+        background-color: rgba(255, 255, 255, 0.7); z-index:9999; font-size:14px; border:2px solid rgba(255, 255, 255, 0.349); padding: 10px; display: flex; align-items: center; border-radius: 0.5rem;">
+        <!-- <b style="margin-right: 10px;">Leyenda</b> -->
+        {% if stats and stats|length >= 2 %}
+        <div style="display: flex; align-items: center; margin-right: 10px;">
+            <span style="text-align:center">
+                <i style="display: inline-block; width: 50px; height: 5px; background: green; margin-right: 5px;"></i>
+                <br>
+                Menos que {{ stats[0] - 1 }} viajes
+                <br>
+                (Flujo bajo)
+            </span>
+        </div>
+        <div style="display: flex; align-items: center; margin-right: 10px;">
+            <span style="text-align:center">
+                <i style="display: inline-block; width: 50px; height: 5px; background: orange; margin-right: 5px;"></i>
+                <br>
+                Entre {{ stats[0] }} y {{ stats[0] + stats[1] - 1 }} viajes
+                <br>
+                (Flujo medio)
+            </span>
+        </div>
+        <div style="display: flex; align-items: center;">
+            <span style="text-align:center">
+                <i style="display: inline-block; width: 50px; height: 5px; background: red; margin-right: 5px;"></i>
+                <br>
+                Más que {{ stats[0] + stats[1] }} viajes
+                <br>
+                (Flujo alto)
+            </span>
+        </div>
+    </div>
+    {% else %}
+    <p>Datos de leyenda no disponibles.</p>
+    {% endif %}
+</div>
+
+{% endblock %}
