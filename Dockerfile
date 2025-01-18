@@ -7,5 +7,5 @@ RUN mkdir /andeschileong
 WORKDIR /andeschileong
 COPY . /andeschileong/
 
-RUN python manage.py collectstatic
+# RUN python manage.py collectstatic
 CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
