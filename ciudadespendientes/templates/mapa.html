@@ -12,7 +12,7 @@
             <span style="text-align:center">
                 <i style="display: inline-block; width: 50px; height: 5px; background: green; margin-right: 5px;"></i>
                 <br>
-                Menos que {{ stats[0] - 1 }} viajes
+                Menos que {{ stats.0|add:-1 }} viajes
                 <br>
                 (Flujo bajo)
             </span>
@@ -21,7 +21,7 @@
             <span style="text-align:center">
                 <i style="display: inline-block; width: 50px; height: 5px; background: orange; margin-right: 5px;"></i>
                 <br>
-                Entre {{ stats[0] }} y {{ stats[0] + stats[1] - 1 }} viajes
+                Entre {{ stats.0 }} y {{ stats.0|add:stats.1|add:-1 }} viajes
                 <br>
                 (Flujo medio)
             </span>
@@ -30,7 +30,7 @@
             <span style="text-align:center">
                 <i style="display: inline-block; width: 50px; height: 5px; background: red; margin-right: 5px;"></i>
                 <br>
-                Más que {{ stats[0] + stats[1] }} viajes
+                Más que {{ stats.0|add:stats.1 }} viajes
                 <br>
                 (Flujo alto)
             </span>

@@ -1,22 +1,27 @@
 /* Main page with stikky-footer */
 html, body {
   height: 100%;
-  background-color: #fff;
+  background-color: #ffffff00;
   font-family: 'Source Sans Pro', sans-serif;
   /* The html and body elements cannot have any padding or margin. */
   border-top: 3px solid #2241a8;
   background-image: url(background.svg);
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
+  margin: 0 0 -200px 0;
 }
 
 /* Wrapper for page content to push down footer */
 #content {
-  min-height: 100%;
+  min-height: 80%;
   position: relative;
-  height: auto;
+  background: none;
+  /* height: auto; */
   /* Negative indent footer by its height */
-  margin: 0 auto -69px;
+  margin: 0 0 -70px;
   /* Pad bottom by footer height */
-  padding: 0 0 69px;
+  padding: 0 0 -70px;
 }
 
 @media screen and (min-width: 601px) {
@@ -98,11 +103,11 @@ html, body {
 .btn {
   background-color: white; 
   color: black; 
-  border: 2px solid #2294a8;
+  border: 2px solid #2241a8;
 }
 
 .btn:hover {
-  background-color: #2294a8;
+  background-color: #2241a8;
   color: white;
 }
 
@@ -269,10 +274,10 @@ h5 a:hover {
 .clearfix:after {
     clear: both;
 }
-
+/* 
 .clearfix {
     *zoom: 1;
-}
+} */
 
 /*  gallery */
 
@@ -395,10 +400,23 @@ h5 a:hover {
 @media screen and (max-width: 600px) {
   .col-lg-3 {
     flex: 1 0 auto;
-    width: 90%;
+    width: 98%;
     margin: auto;
     text-align: justify;
   }
 }
 
+/* Estilos para el contenedor del mapa */
+.map-container {
+  position: relative;
+  width: 95%;
+  max-height: 650px;
+  margin: 0 auto;
+}
 
+/* Estilos adicionales para el mapa si es necesario */
+.map-container .leaflet-container {
+  width: 100%;
+  height: 100%;
+  border-radius: 1.5rem;
+}

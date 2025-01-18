@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-v&+z-v1e*+zt(qy!1%r*0ub^venalwn+x2wkl^tnsmumc13nx6
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['v2.ciudadespendientes.cl', 'ciudadespendientes-v2-production.up.railway.app/']
+ALLOWED_HOSTS = ['v2.ciudadespendientes.cl', 'ciudadespendientes-v2-production.up.railway.app', 'localhost']
 
 
 # Application definition
@@ -114,7 +114,6 @@ LANGUAGE_CODE = 'es-cl'
 TIME_ZONE = 'America/Santiago'
 
 USE_I18N = True
-
 USE_TZ = True
 
 USE_L10N = True
@@ -144,4 +143,6 @@ CP_STRAVA_COLLECTION = os.environ.get('CP_STRAVA_COLLECTION')
 # Other
 DATA_DIR = os.environ.get('DATA_DIR')
 DEBUG = os.environ.get('DEBUG').capitalize() == 'True' if os.environ.get('DEBUG') else False
-# print(DEBUG)
+if (DEBUG):
+    ALLOWED_HOSTS = ['*']
+print(DEBUG)
