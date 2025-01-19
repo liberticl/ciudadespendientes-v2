@@ -41,23 +41,3 @@ def show_data(request):
                   'stats': stats,
                   'dynamic_content': dynamic
                   })
-
-
-# def show_data(request):
-#     years = [int(year) for year in request.GET["periodo"].split(',')]
-#     cities = [city + ', Chile' for city in request.GET["comunas"].split(',')]
-
-#     client = MongoClient(settings.MONGO_DB)
-#     db = client[settings.MONGO_CP_DB]
-#     collection = db[settings.CP_STRAVA_COLLECTION]
-#     all_bounds = []
-#     all_references = []
-#     for city in cities:
-#         city_data = get_city_data(city)
-#         all_bounds.append(city_data[0])
-#         all_references.append(city_data[1])
-#     center = get_middle_point(all_references)
-#     m = color_ride_map(all_bounds, center, years, collection)
-
-#     rendered_map = m.get_root().render()
-#     return HttpResponse(rendered_map, content_type="text/html")

@@ -123,7 +123,7 @@ USE_L10N = True
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATIC_ROOT = '/andeschileong/static'
 # STATICFILES_DIRS = [
 #     BASE_DIR / 'ciudadespendientes' / 'static',
 # ]
@@ -145,4 +145,22 @@ DATA_DIR = os.environ.get('DATA_DIR')
 DEBUG = os.environ.get('DEBUG').capitalize() == 'True' if os.environ.get('DEBUG') else False
 if (DEBUG):
     ALLOWED_HOSTS = ['*']
-print(DEBUG)
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': 'debug.log',  # Ruta dentro del contenedor
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+    },
+}
