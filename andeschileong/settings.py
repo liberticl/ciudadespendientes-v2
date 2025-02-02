@@ -55,6 +55,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
 ]
 
 ROOT_URLCONF = 'andeschileong.urls'
@@ -65,8 +66,8 @@ CSRF_TRUSTED_ORIGINS = ['https://v2.ciudadespendientes.cl']
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / "ciudadespendientes" / "templates"],
         'APP_DIRS': True,
+        'DIRS': [BASE_DIR / "templates"],
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',
@@ -183,3 +184,9 @@ DATABASES = {
         'PORT': DB_PORT,
     }
 }
+
+
+# Redirección del login y logout
+LOGIN_REDIRECT_URL = 'buscar'
+LOGOUT_REDIRECT_URL = 'login'
+LOGIN_URL = 'login'

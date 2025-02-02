@@ -16,10 +16,22 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from django.conf.urls import handler404
 from ciudadespendientes import views
+from django.contrib.auth import views as auth_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', views.index, name='index'),
+    path('login/',
+         auth_views.LoginView.as_view(template_name='accounts/login.html'),
+         name='login'),
+    path('logout/',
+         auth_views.LogoutView.as_view(template_name='accounts/login.html'),
+         name='logout'),
+    path('', views.index, name='buscar'),
     path('mapa/', views.show_data, name='show_data'),
+    path('404/', views.error_404, name='error_404'),
 ]
+
+
+# handler404 =
