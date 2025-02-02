@@ -1,9 +1,12 @@
+import os
+import pandas as pd
 import geopandas as gpd
 from .codes.mongodb import middle_points_aggregate
 from zipfile import ZipFile
 from pymongo import MongoClient, UpdateOne
-from andeschileong.settings import (MONGO_DB, MONGO_CP_DB, CP_STRAVA_COLLECTION,
-                      DATA_DIR, DEBUG)
+from andeschileong.settings import (
+    MONGO_DB, MONGO_CP_DB, CP_STRAVA_COLLECTION,
+    DATA_DIR, DEBUG)
 
 
 # Creates the mongodb files to upload

@@ -8,4 +8,8 @@ ciudadespendientes/codes/__pycache__
 Nginx
 docker-compose.yml
 nginx.conf
+debug.log
+.flake8
 
+*__pycache__
+*migrations/

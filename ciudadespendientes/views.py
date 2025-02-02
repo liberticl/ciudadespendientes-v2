@@ -6,16 +6,19 @@ from .codes.plot_maps import get_city_data, color_ride_map
 from .utils import get_middle_point
 
 ALLOWED_YEARS = [2019, 2020, 2021, 2022, 2023]
-ALLOWED_CITIES = ['Viña del Mar', 'Valparaíso', 'Villa Alemana', 'Quilpué', 'Concón']
+ALLOWED_CITIES = ['Viña del Mar', 'Valparaíso',
+                  'Villa Alemana', 'Quilpué', 'Concón']
+
 
 def index(request):
     if request.method == "POST":
         years = request.POST.getlist("periodo")
         cities = request.POST.getlist("comunas")
 
-        return redirect(reverse("show_data") + f"?periodo={','.join(years)}&comunas={','.join(cities)}")
+        return redirect(reverse("show_data") + f"?periodo={','.join(years)}&comunas={','.join(cities)}") # noqa
 
-    return render(request, "index.html", {'periodo': ALLOWED_YEARS, 'comunas': ALLOWED_CITIES})
+    return render(request, "index.html",
+                  {'periodo': ALLOWED_YEARS, 'comunas': ALLOWED_CITIES})
 
 
 def show_data(request):
@@ -32,9 +35,10 @@ def show_data(request):
         city_data = get_city_data(city)
         all_bounds.append(city_data[0])
         all_references.append(city_data[1])
+
     center = get_middle_point(all_references)
     m, s = color_ride_map(all_bounds, center, years,
-                            collection, anual=False)
+                          collection, anual=False)
     dynamic = m.get_root().render()
     stats = [round(x) for x in s]
     return render(request, 'mapa.html', {

@@ -16,30 +16,35 @@ from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
+AUTH_USER_MODEL = "accounts.Account"
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-v&+z-v1e*+zt(qy!1%r*0ub^venalwn+x2wkl^tnsmumc13nx6'
+SECRET_KEY = 'django-insecure-v&+z-v1e*+zt(qy!1%r*0ub^venalwn+x2wkl^tnsmumc13nx6' # noqa
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['v2.ciudadespendientes.cl', 'ciudadespendientes-v2-production.up.railway.app', 'localhost']
+ALLOWED_HOSTS = ['v2.ciudadespendientes.cl',
+                 'ciudadespendientes-v2-production.up.railway.app',
+                 'localhost']
 
 
 # Application definition
 
 INSTALLED_APPS = [
+    'admin_interface',
+    'colorfield',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'ciudadespendientes'
+    'ciudadespendientes',
+    'accounts',
 ]
 
 MIDDLEWARE = [
@@ -76,32 +81,21 @@ TEMPLATES = [
 WSGI_APPLICATION = 'andeschileong.wsgi.application'
 
 
-# Database
-# https://docs.djangoproject.com/en/5.0/ref/settings/#databases
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
-
-
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator', # noqa
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator', # noqa
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator', # noqa
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator', # noqa
     },
 ]
 
@@ -140,9 +134,19 @@ MONGO_DB = os.environ.get('MONGO_DB')
 MONGO_CP_DB = os.environ.get('MONGO_CP_DB')
 CP_STRAVA_COLLECTION = os.environ.get('CP_STRAVA_COLLECTION')
 
+# Postgres info
+POSTGRES_DB = os.environ.get('POSTGER_DB',
+                             default='viaduct.proxy.rlwy.net:55138')
+db = POSTGRES_DB.split(':')
+DB_HOST = db[0]
+DB_PORT = db[1]
+DB_NAME = os.environ.get('DB_NAME', default='ciudadespendientes')
+DB_USER = os.environ.get('DB_USER', default='postgres')
+DB_PASS = os.environ.get('DB_PASS')
+
 # Other
 DATA_DIR = os.environ.get('DATA_DIR')
-DEBUG = os.environ.get('DEBUG').capitalize() == 'True' if os.environ.get('DEBUG') else False
+DEBUG = os.environ.get('DEBUG').capitalize() == 'True' if os.environ.get('DEBUG') else False # noqa
 if (DEBUG):
     ALLOWED_HOSTS = ['*']
 
@@ -163,4 +167,19 @@ LOGGING = {
             'propagate': True,
         },
     },
+}
+
+
+# Database
+# https://docs.djangoproject.com/en/5.0/ref/settings/#databases
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': DB_NAME,
+        'USER': DB_USER,
+        'PASSWORD': DB_PASS,
+        'HOST': DB_HOST,
+        'PORT': DB_PORT,
+    }
 }
