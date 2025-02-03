@@ -10,7 +10,6 @@ COPY . /andeschileong/
 RUN apt-get update && apt-get install -y nginx
 RUN mkdir -p /andeschileong/static
 COPY nginx.conf /etc/nginx/nginx.conf
-RUN python manage.py migrate
 RUN python manage.py collectstatic --noinput --clear
 RUN nginx -t
 
