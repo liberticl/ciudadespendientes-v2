@@ -136,13 +136,12 @@ MONGO_CP_DB = os.environ.get('MONGO_CP_DB')
 CP_STRAVA_COLLECTION = os.environ.get('CP_STRAVA_COLLECTION')
 
 # Postgres info
-POSTGRES_DB = os.environ.get('POSTGER_DB',
-                             default='viaduct.proxy.rlwy.net:55138')
+POSTGRES_DB = os.environ.get('POSTGER_DB')
 db = POSTGRES_DB.split(':')
 DB_HOST = db[0]
 DB_PORT = db[1]
-DB_NAME = os.environ.get('DB_NAME', default='ciudadespendientes')
-DB_USER = os.environ.get('DB_USER', default='postgres')
+DB_NAME = os.environ.get('DB_NAME')
+DB_USER = os.environ.get('DB_USER')
 DB_PASS = os.environ.get('DB_PASS')
 
 # Other
