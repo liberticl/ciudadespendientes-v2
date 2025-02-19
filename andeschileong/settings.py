@@ -119,6 +119,7 @@ USE_L10N = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = '/andeschileong/static'
+# STATIC_ROOT = './static'  # Para local
 # STATICFILES_DIRS = [
 #     BASE_DIR / 'ciudadespendientes' / 'static',
 # ]
