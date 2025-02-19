@@ -136,14 +136,9 @@ def color_ride_map(city_bounds, center, years, collection,
         # Agregar los datos a la capa correspondiente
         layers[classification[0]].data.append(data)
 
-    # Actualizar el mapa con las capas
-    # mapa.layers = list(layers.values())
-    # print(mapa.layers)
-
     mapa = pdk.Deck(
         layers=list(layers.values()),
         initial_view_state=view_state,
-        # map_style="light",
         map_style="https://basemaps.cartocdn.com/gl/positron-gl-style/style.json", # noqa
         tooltip={"text": "Viajes totales: {trips}"},
     )
