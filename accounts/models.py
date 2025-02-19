@@ -2,8 +2,8 @@ from datetime import datetime
 from django.db import models
 from django.utils import timezone
 from django.core.validators import RegexValidator
-from django.contrib.auth.models import (
-    BaseUserManager, AbstractBaseUser, PermissionsMixin, Group, Permission)
+from django.contrib.auth.models import (BaseUserManager,
+                                        AbstractBaseUser, PermissionsMixin)
 from ciudadespendientes.models import Zone
 from ciudadespendientes.choices import COUNTRIES
 
@@ -47,8 +47,10 @@ class Account(PermissionsMixin, AbstractBaseUser):
 
     is_active = models.BooleanField(default=True, verbose_name="Activo")
     is_demo = models.BooleanField(default=False, verbose_name="Demo")
-    is_staff = models.BooleanField(default=False, verbose_name="Andes Chile ONG")
-    is_superuser = models.BooleanField(default=False, verbose_name="Superusuario")
+    is_staff = models.BooleanField(default=False,
+                                   verbose_name="Andes Chile ONG")
+    is_superuser = models.BooleanField(default=False,
+                                       verbose_name="Superusuario")
     date_joined = models.DateTimeField(
         "Fecha de registro", default=timezone.now)
 
@@ -86,7 +88,7 @@ class Account(PermissionsMixin, AbstractBaseUser):
 
     def __str__(self):
         return self.email
-    
+
     def create_default_password(self):
         email = self.email.lower()
         user_name = email.split('@')

@@ -4,8 +4,8 @@ from django.urls import reverse
 from pymongo import MongoClient
 from django.conf import settings
 from .codes.plot_maps import (get_ride_from_mongo,
-                              process_ride_data, get_statistics,
-                              classify, get_city_data)
+                              process_ride_data, get_city_data)
+from .codes.classifier import get_statistics, classify
 from .utils import get_middle_point
 import pydeck as pdk
 
@@ -107,7 +107,8 @@ def prepare_map(center):
     return (view_state, layers)
 
 
-def color_ride_map(city_bounds, center, years, collection, factor=1, anual=False):
+def color_ride_map(city_bounds, center, years, collection,
+                   factor=1, anual=False):
     view_state, layers = prepare_map(center)
     mongodata = get_ride_from_mongo(city_bounds, years, collection)
     ride_data, trip_count = process_ride_data(mongodata)
@@ -143,7 +144,7 @@ def color_ride_map(city_bounds, center, years, collection, factor=1, anual=False
         layers=list(layers.values()),
         initial_view_state=view_state,
         # map_style="light",
-        map_style="https://basemaps.cartocdn.com/gl/positron-gl-style/style.json",
+        map_style="https://basemaps.cartocdn.com/gl/positron-gl-style/style.json", # noqa
         tooltip={"text": "Viajes totales: {trips}"},
     )
     return mapa, stats

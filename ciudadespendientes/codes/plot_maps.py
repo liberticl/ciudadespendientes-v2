@@ -2,7 +2,6 @@ import geopandas as gpd
 import folium
 from .apis import get_place_polygon
 from .mongodb import points_inside
-from .classifier import classify, get_statistics
 from shapely.geometry import Point, Polygon
 
 
