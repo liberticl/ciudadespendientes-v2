@@ -44,31 +44,6 @@ def get_city_data(city):
     return [data['geometry'][0], polygon[1]]
 
 
-# def prepare_map(center):
-#     tile = 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}'  # noqa
-#     attr = 'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ, TomTom, Intermap, iPC, USGS, FAO, NPS, NRCAN, GeoBase, Kadaster NL, Ordnance Survey, Esri Japan, METI, Esri China (Hong Kong), and the GIS User Community'  # noqa
-
-#     mapa = folium.Map(
-#         location=center,
-#         zoom_start=13,
-#         zoom_control=True,
-#         control_scale=True,
-#         prefer_canvas=True,
-#         height='650px',
-#         tiles='')
-
-#     folium.TileLayer(tile, name='Mapa', attr=attr).add_to(mapa)
-#     layers = {'green': folium.FeatureGroup(name='Flujo bajo',
-#                                            show=False),
-#               'orange': folium.FeatureGroup(name='Flujo medio',
-#                                             show=True),
-#               'red': folium.FeatureGroup(name='Flujo alto',
-#                                          show=True),
-#               }
-
-#     return (mapa, layers)
-
-
 def get_ride_from_mongo(city_bounds, years, collection):
     full_coords = []
     for bounds in city_bounds:
@@ -97,52 +72,6 @@ def process_ride_data(mongodata):
         ride_data.append((coords, total_trip_count))
         trip_count.append(total_trip_count)
     return (ride_data, trip_count)
-
-
-# def color_ride_map(city_bounds, center, years, collection,
-#                    factor=1, anual=False):
-#     """
-#         Generate HTML map based on:
-#         - city_bounds: limits of the city
-#         - center: middle point of the simplified city bounds
-#         - years: year or list of years of interest
-#         - collection: mongoDB collection to plot
-#         - factor: error between Strava data and reality
-#         - anual: True if map shows average data or full data based on years
-#     """
-#     mapa, layers = prepare_map(center)
-#     mongodata = get_ride_from_mongo(city_bounds, years, collection)
-#     ride_data, trip_count = process_ride_data(mongodata)
-
-#     stats = get_statistics(
-#         trip_count, years) if anual else get_statistics(trip_count)
-
-#     for coords, trips in ride_data:
-#         classification = classify(
-#             trips, years, method='general', factor=factor,
-#             statistics=stats, anual=anual)
-#         if (anual and isinstance(years, list)):
-#             trips = '{:,.0f}'.format(
-#                 round(trips / len(years) / factor)).replace(',', '.')
-#         else:
-#             trips = '{:,.0f}'.format(round(trips / factor)).replace(',', '.')
-
-#         folium.PolyLine(locations=coords,
-#                         color=classification[0],
-#                         tooltip=f"Viajes totales: {trips}",
-#                         **classification[1]).add_to(layers[classification[0]])  # noqa
-#     # print(f'| - Clasificación  | {(datetime.now() - start).total_seconds()} |') # noqa
-#     # start = datetime.now()
-#     for color_group in layers.values():
-#         color_group.add_to(mapa)
-#     # print(f'| - Asignación de color a líneas | {(datetime.now() - start).total_seconds()} |') # noqa
-#     # start = datetime.now()
-
-#     folium.LayerControl(collapsed=False,
-#                         overlay=True).add_to(mapa)
-#     # print(f'| - Adición de controles al mapa | {(datetime.now() - start).total_seconds()} |') # noqa
-
-#     return mapa, stats
 
 
 # Incluye visualización de ascensores
