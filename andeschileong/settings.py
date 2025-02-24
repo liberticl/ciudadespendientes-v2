@@ -134,8 +134,8 @@ load_dotenv()
 
 # MongoDB info
 MONGO_DB = os.environ.get('MONGO_DB')
-MONGO_CP_DB = os.environ.get('MONGO_CP_DB')
-CP_STRAVA_COLLECTION = os.environ.get('CP_STRAVA_COLLECTION')
+MONGO_CP_DB = os.environ.get('MONGO_CP_DB', 'ciudadespendientes')
+CP_STRAVA_COLLECTION = os.environ.get('CP_STRAVA_COLLECTION', 'strava')
 
 client = MongoClient(MONGO_DB)
 db = client[MONGO_CP_DB]
