@@ -17,11 +17,34 @@ html, body {
   min-height: 80%;
   position: relative;
   background: none;
-  /* height: auto; */
-  /* Negative indent footer by its height */
-  margin: 0 0 -70px;
-  /* Pad bottom by footer height */
-  padding: 0 0 -70px;
+  margin: 0;
+  padding: 0 0 110px;
+}
+
+/* Wrapper for page login to push down footer */
+#login {
+  min-height: 80%;
+  position: relative;
+  background: none;
+  height: auto;
+  margin: 0;
+  padding: 0 0 110px;
+  display: flex;
+  align-items: center; /* Centra verticalmente */
+  justify-content: center; 
+}
+
+.login-container {
+  width: 100%; /* Ajusta el ancho según sea necesario */
+  max-width: 350px; /* Ajusta el ancho máximo según sea necesario */
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 1rem;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.login-container label::before {
+  content: ' '
 }
 
 @media screen and (min-width: 601px) {
@@ -249,7 +272,7 @@ h5 a:hover {
   border-bottom: 5px solid #2241a8;
   padding: 5px 0;
   text-decoration: none !important;
-  position: relative;
+  margin-top: -40px;
 }
 
 
