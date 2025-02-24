@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es-CL">
+
+<head>
+    {% include 'head.html' %}
+    <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v1.13.0/mapbox-gl.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" />
+    <script src='https://cdn.jsdelivr.net/npm/@deck.gl/jupyter-widget@~8.5.*/dist/index.js'></script>
+</head>
+
+<body>
+    <div class="container">
+        {% include 'navbar.html' %}
+    </div>
+    <div class="map-container">
+        <!-- <form method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit">Actualizar Mapa</button>
+            </form> -->
+        {{ content | safe }}
+        <div class="legend">
+            <!-- <b style="margin-right: 10px;">Leyenda</b> -->
+            {% if stats and stats|length >= 2 %}
+            <div style="display: flex; align-items: center; margin-right: 10px;">
+                <span style="text-align:center">
+                    <i
+                        style="display: inline-block; width: 50px; height: 5px; background: green; margin-right: 5px;"></i>
+                    <br>
+                    Menos que {{ stats.0|add:-1 }} viajes
+                    <br>
+                    (Flujo bajo)
+                </span>
+            </div>
+            <div style="display: flex; align-items: center; margin-right: 10px;">
+                <span style="text-align:center">
+                    <i
+                        style="display: inline-block; width: 50px; height: 5px; background: orange; margin-right: 5px;"></i>
+                    <br>
+                    Entre {{ stats.0 }} y {{ stats.0|add:stats.1|add:-1 }} viajes
+                    <br>
+                    (Flujo medio)
+                </span>
+            </div>
+            <div style="display: flex; align-items: center;">
+                <span style="text-align:center">
+                    <i style="display: inline-block; width: 50px; height: 5px; background: red; margin-right: 5px;"></i>
+                    <br>
+                    Más que {{ stats.0|add:stats.1 }} viajes
+                    <br>
+                    (Flujo alto)
+                </span>
+            </div>
+            {% else %}
+            <p>Datos de leyenda no disponibles.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    {% include 'footer.html' %}
+</body>
+
+</html>

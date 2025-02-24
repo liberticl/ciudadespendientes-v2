@@ -9,12 +9,12 @@ html, body {
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center center;
-  margin: 0 0 -200px 0;
+  margin: 0;
 }
 
 /* Wrapper for page content to push down footer */
 #content {
-  min-height: 80%;
+  min-height: 84.5%;
   position: relative;
   background: none;
   margin: 0;
@@ -139,8 +139,12 @@ html, body {
   max-width: 800px;
   text-align: center;
   background-color: #fff;
-  padding: 1%;
+  /* padding: 1%; */
   border-radius: 1.5rem;
+}
+
+.mb-3 {
+  margin-bottom: 0;
 }
 
 .container a {
@@ -272,9 +276,12 @@ h5 a:hover {
   border-bottom: 5px solid #2241a8;
   padding: 5px 0;
   text-decoration: none !important;
-  margin-top: -40px;
 }
 
+.text-muted {
+  color: #6c757d !important;
+  padding: 1%;
+}
 
 *,
 *:after,
@@ -434,18 +441,49 @@ h5 a:hover {
 .map-container {
   position: relative;
   width: 95%;
-  max-height: 650px;
   margin: 0 auto;
 }
 
-.map-wrapper iframe {
+.legend {
+  position: absolute;
+  bottom: 25px;
+  right: 10px;
+  background-color: rgba(255, 255, 255, 0.7);
+  z-index:99;
+  font-size:14px;
+  border:2px solid rgba(255, 255, 255, 0.349);
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  border-radius: 0.5rem;
+}
+
+#deck-map-container {
+  width: 100%;
+  height: 100%;
+  border-radius: 1rem;
+  background-color: black;
+}
+
+#map {
+  pointer-events: none;
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  z-index: 1;
+}
+
+#deckgl-overlay {
+  z-index: 2;
+  background: none;
+}
+
+#deck-map-wrapper {
   width: 100%;
   height: 100%;
 }
 
-/* Estilos adicionales para el mapa si es necesario */
-.map-container .leaflet-container {
+#deck-container {
   width: 100%;
-  height: 100%;
-  border-radius: 1.5rem;
+  height: 85vh;
 }

@@ -1,8 +1,6 @@
 # from django.conf import settings
 # from typing import Any, Dict, List
 
-
-
 # def get_context_environment_for_templates() -> Dict[str, Any]:
 #     """
 #     Get settings variables for templates.

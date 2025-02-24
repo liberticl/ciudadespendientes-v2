@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 from pathlib import Path
 import os
 from dotenv import load_dotenv
+from pymongo import MongoClient
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -22,7 +23,7 @@ AUTH_USER_MODEL = "accounts.Account"
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-v&+z-v1e*+zt(qy!1%r*0ub^venalwn+x2wkl^tnsmumc13nx6' # noqa
+SECRET_KEY = 'django-insecure-v&+z-v1e*+zt(qy!1%r*0ub^venalwn+x2wkl^tnsmumc13nx6'  # noqa
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -87,16 +88,16 @@ WSGI_APPLICATION = 'andeschileong.wsgi.application'
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator', # noqa
+        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',  # noqa
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator', # noqa
+        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',  # noqa
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator', # noqa
+        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',  # noqa
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator', # noqa
+        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',  # noqa
     },
 ]
 
@@ -136,6 +137,10 @@ MONGO_DB = os.environ.get('MONGO_DB')
 MONGO_CP_DB = os.environ.get('MONGO_CP_DB')
 CP_STRAVA_COLLECTION = os.environ.get('CP_STRAVA_COLLECTION')
 
+client = MongoClient(MONGO_DB)
+db = client[MONGO_CP_DB]
+STRAVA_COLLECTION = db[CP_STRAVA_COLLECTION]
+
 # Postgres info
 DB_HOST = os.environ.get('DB_HOST')
 DB_PORT = os.environ.get('DB_PORT')
@@ -145,7 +150,7 @@ DB_PASS = os.environ.get('DB_PASS')
 
 # Other
 DATA_DIR = os.environ.get('DATA_DIR')
-DEBUG = os.environ.get('DEBUG').capitalize() == 'True' if os.environ.get('DEBUG') else False # noqa
+DEBUG = os.environ.get('DEBUG').capitalize() == 'True' if os.environ.get('DEBUG') else False  # noqa
 if (DEBUG):
     ALLOWED_HOSTS = ['*']
 
@@ -188,3 +193,28 @@ DATABASES = {
 LOGIN_REDIRECT_URL = 'buscar'
 LOGOUT_REDIRECT_URL = 'login'
 LOGIN_URL = 'login'
+
+# Colors
+GREEN = 'green'
+ORANGE = 'orange'
+RED = 'red'
+LAYERS = {
+    GREEN: {
+        'color_txt': GREEN,
+        'color': '[0, 128, 0, 150]',
+        'width': 3,
+        'label': 'Flujo bajo'
+        },
+    ORANGE: {
+        'color_txt': ORANGE,
+        'color': '[255, 165, 0, 190]',
+        'width': 5,
+        'label': 'Flujo medio'
+        },
+    RED: {
+        'color_txt': RED,
+        'color': '[255, 0, 0, 210]',
+        'width': 5,
+        'label': 'Flujo alto'
+        }
+}
