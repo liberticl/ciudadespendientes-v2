@@ -1,4 +1,5 @@
 import os
+import requests
 import pandas as pd
 import geopandas as gpd
 from .codes.mongodb import middle_points_aggregate
@@ -80,23 +81,31 @@ def get_middle_point(references):
     return tuple([element / len(references) for element in references_sum])
 
 
+def get_user_ip(ip):
+    url = f"https://ipinfo.io/{ip}/json"
+    r = requests.get(url)
+    if r.status_code == 200:
+        data = r.json()
+        data.pop('ip', None)
+        data.pop('org', None)
+    else:
+        data = data.get('error', None)
+    
+    return {
+        'status': r.status_code,
+        'info': data
+    }
+
+
 if __name__ == '__main__':
-    # import time
     client = MongoClient(MONGO_DB)
     db = client[MONGO_CP_DB]
     collection = db[CP_STRAVA_COLLECTION]
-    # city = 'Viña del Mar, Chile'
-    # center = get_polygon_middle_point(city, collection)
-    # color_ride_map(city, center, collection)
 
-    # print('Importando datos a MongoDB...')
-    # for year in [2019]:
-    #     start = time.time()
-    #     strava_to_mongo(f'{year}.zip', collection)
-    #     end = time.time()
-    #     print(f'Datos importados a mongodb en {end - start} segundos\n')
+    print('Importando datos a MongoDB...')
+    strava_to_mongo('data.zip', collection)
 
-    # print(f'Creando puntos medios...')
-    # create_middle_points(collection)
-    # print(f'Finalizado!')
+    print(f'Creando puntos medios...')
+    create_middle_points(collection)
+    print(f'Finalizado!')
     client.close()

@@ -9,13 +9,14 @@ from .codes.classifier import get_statistics, classify
 from .utils import get_middle_point
 import pydeck as pdk
 from bs4 import BeautifulSoup
+# from .models import StravaData
 
 collection = settings.STRAVA_COLLECTION
 LAYER_COLORS = settings.LAYERS
 GREEN = settings.GREEN
-ALLOWED_YEARS = [2019, 2020, 2021, 2022, 2023]
+ALLOWED_YEARS = [2019, 2020, 2021, 2022, 2023, 2024]
 ALLOWED_CITIES = ['Viña del Mar', 'Valparaíso',
-                  'Villa Alemana', 'Quilpué', 'Concón']
+                  'Villa Alemana', 'Quilpué', 'Concón', 'Melipilla']
 
 
 @login_required
@@ -31,13 +32,14 @@ def index(request):
 
     return render(request, "ciudadespendientes/buscar.html",
                   {'periodo': ALLOWED_YEARS, 'comunas': ALLOWED_CITIES})
+                #    'comunas': StravaData.objects.filter(on_mongo=False)})
 
 
 @login_required
 def show_data(request):
     layercontrol = LayerControlForm(request.POST or None)
     years = [int(year) for year in request.GET["periodo"].split(',')]
-    cities = [city + ', Chile' for city in request.GET["comunas"].split(',')]
+    cities = [city for city in request.GET["comunas"].split(',')]
 
     all_bounds = []
     all_references = []
@@ -64,7 +66,8 @@ def error_404(request, exception=None):
 
 
 def create_layer(valid, data, is_visible=False):
-    green = False if data['color_txt'] == GREEN else True
+    # green = False if data['color_txt'] == GREEN else True
+    green = True
     return pdk.Layer(
         "PathLayer",
         data=[],
