@@ -5,6 +5,7 @@ ZONE_TYPES = (
     ('País', 'País'),
     ('Región', 'Región'),
     ('Comuna', 'Comuna'),
+    ('Zona Regional', 'Zona Regional'),
     ('Particular', 'Particular')
 )
 

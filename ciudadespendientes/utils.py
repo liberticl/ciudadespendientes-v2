@@ -7,7 +7,7 @@ from zipfile import ZipFile
 from pymongo import MongoClient, UpdateOne
 from andeschileong.settings import (
     MONGO_DB, MONGO_CP_DB, CP_STRAVA_COLLECTION,
-    DATA_DIR, DEBUG)
+    DATA_DIR)
 
 
 # Creates the mongodb files to upload

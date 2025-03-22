@@ -12,6 +12,14 @@ class ZoneAdmin(admin.ModelAdmin):
     list_display = ('name', 'zone_type', 'country',)
     list_filter = ('name', 'zone_type', 'country',)
     search_fields = ('name', 'zone_type', 'country',)
+    fieldsets = (
+        ('General', {
+            'fields': (
+                'name', 'zone_type', 'country',)}),
+        ('Pertenencia de la zona', {
+            'fields': ('sectors',)}),
+    )
+    filter_horizontal = ('sectors',)
 
 
 @admin.register(models.StravaData)
@@ -21,7 +29,6 @@ class StravaDataAdmin(admin.ModelAdmin):
     """
     list_display = ('sector', 'year', 'month', 'osm_id', 'coords', 'on_mongo',)
     list_filter = ('on_mongo',
-                   ('zone', admin.RelatedOnlyFieldListFilter),
                    'year', 'sector',)
     search_fields = ('zone', 'year', 'sector',)
     readonly_fields = ('osm_id', 'coords',)

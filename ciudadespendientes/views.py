@@ -10,6 +10,8 @@ from .utils import get_middle_point, get_city_data
 import pydeck as pdk
 from bs4 import BeautifulSoup
 from .models import StravaData
+from django.db.models import Prefetch
+
 
 collection = settings.STRAVA_COLLECTION
 LAYER_COLORS = settings.LAYERS
@@ -30,11 +32,20 @@ def index(request):
 
         return redirect(reverse("show_data") + f"?periodo={','.join(years)}&comunas={','.join(cities)}")  # noqa
 
-    sectors = StravaData.objects.filter(on_mongo=True).only('sector')
-    sector_list = [s.sector for s in sectors]
+    if (not request.user.is_superuser):
+        user_zones = request.user.zones.prefetch_related(
+            Prefetch('sectores', queryset=StravaData.objects.all())
+        ).all()
+        user_sectors = StravaData.objects.filter(
+            sectores__in=user_zones).distinct()
+        sectors = user_sectors.values_list('sector', flat=True).distinct()
+    else:
+        sectors = StravaData.objects.filter(
+            on_mongo=True).values_list('sector', flat=True).distinct()
+
     return render(request, "ciudadespendientes/buscar.html",
                   {'periodo': ALLOWED_YEARS,
-                   'comunas': sector_list})
+                   'comunas': sectors if sectors else []})
 
 
 @login_required
@@ -149,4 +160,4 @@ def get_map_html(html_text):
     soup = BeautifulSoup(html_text, 'html.parser')
     script = list(soup.find_all('script'))[-1].string
     return ''.join(
-        str(child) for child in soup.body.children) + f"\n<script>{script}</script>" # noqa
+        str(child) for child in soup.body.children) + f"\n<script>{script}</script>"  # noqa

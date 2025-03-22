@@ -1,38 +1,40 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <div id="content">
-    <div class="container">
-      <h3 class="mt-3 "><b>Buscador de flujo según año y comuna</b></h3>
-      <br>
-      <form method="POST" action="/">
-        {% csrf_token %}
-        <div class="row">
-          <div class="col-lg-3">
-            <div class="form-container">
-              <h5><label for="comunas">Comunas:</label></h5>
-              <br>
-              {% for ciudad in comunas %}
-                <input type="checkbox" id="ciudad{{ forloop.counter }}" name="comunas" value="{{ ciudad }}">
-                <label for="ciudad{{ forloop.counter }}">{{ ciudad|upper }}</label><br>
-              {% endfor %}
-            </div>
-          </div>
-          <div class="col-lg-3">
-            <div class="form-container">
-              <h5><label for="periodo">Años:</label></h5>
-              <br>
-              {% for per in periodo %}
-              <input type="checkbox" id="per{{ loop.index }}" name="periodo" value="{{ per }}">
-              <label for="per{{ loop.index }}">{{ per }}</label><br>
-              {% endfor %}
-            </div>
+<div id="content">
+  <div class="container">
+    <h3 class="mt-3 "><b>Buscador de flujo según año y comuna</b></h3>
+    <br>
+    <form method="POST" action="/">
+      {% csrf_token %}
+      <div class="row">
+        <div class="col-lg-3">
+          <div class="form-container">
+            <h5><label for="comunas">Comunas:</label></h5>
+            <br>
+            {% for ciudad in comunas %}
+            <input type="checkbox" id="ciudad{{ forloop.counter }}" name="comunas" value="{{ ciudad }}">
+            <label for="ciudad{{ forloop.counter }}">{{ ciudad|upper }}</label><br>
+            {% empty %}
+            <p style="color: red;">No tienes permiso para visualización.</p>
+            {% endfor %}
           </div>
         </div>
-        <br>
-        <button type="submit" class="btn btn-primary" style="text-align: right">VER MAPA</button>
-      </form>
-    </div>
+        <div class="col-lg-3">
+          <div class="form-container">
+            <h5><label for="periodo">Años:</label></h5>
+            <br>
+            {% for per in periodo %}
+            <input type="checkbox" id="per{{ loop.index }}" name="periodo" value="{{ per }}">
+            <label for="per{{ loop.index }}">{{ per }}</label><br>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+      <br>
+      <button type="submit" class="btn btn-primary" style="text-align: right">VER MAPA</button>
+    </form>
   </div>
+</div>
 
 {% endblock %}

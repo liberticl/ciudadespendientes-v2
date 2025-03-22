@@ -1,9 +1,10 @@
-from .models import Account
+from . import models
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from .forms import AccountChangeForm, AccountCreationForm
 
 
+@admin.register(models.Account)
 class AccountAdmin(UserAdmin):
     # The forms to add and change user instances
     form = AccountChangeForm
@@ -48,6 +49,3 @@ class AccountAdmin(UserAdmin):
     #     actions.clean_user
     # ]
     # inlines = (EnterprisePermissionInline, NotificationInline,)
-
-
-admin.site.register(Account, AccountAdmin)
