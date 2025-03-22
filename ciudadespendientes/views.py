@@ -4,19 +4,19 @@ from .forms import LayerControlForm
 from django.urls import reverse
 from django.conf import settings
 from .codes.plot_maps import (get_ride_from_mongo,
-                              process_ride_data, get_city_data)
+                              process_ride_data)
 from .codes.classifier import get_statistics, classify
-from .utils import get_middle_point
+from .utils import get_middle_point, get_city_data
 import pydeck as pdk
 from bs4 import BeautifulSoup
-# from .models import StravaData
+from .models import StravaData
 
 collection = settings.STRAVA_COLLECTION
 LAYER_COLORS = settings.LAYERS
 GREEN = settings.GREEN
 ALLOWED_YEARS = [2019, 2020, 2021, 2022, 2023, 2024]
-ALLOWED_CITIES = ['Viña del Mar', 'Valparaíso',
-                  'Villa Alemana', 'Quilpué', 'Concón', 'Melipilla']
+# ALLOWED_CITIES = ['Viña del Mar', 'Valparaíso',
+#                   'Villa Alemana', 'Quilpué', 'Concón', 'Melipilla']
 
 
 @login_required
@@ -30,9 +30,11 @@ def index(request):
 
         return redirect(reverse("show_data") + f"?periodo={','.join(years)}&comunas={','.join(cities)}")  # noqa
 
+    sectors = StravaData.objects.filter(on_mongo=True).only('sector')
+    sector_list = [s.sector for s in sectors]
     return render(request, "ciudadespendientes/buscar.html",
-                  {'periodo': ALLOWED_YEARS, 'comunas': ALLOWED_CITIES})
-                #    'comunas': StravaData.objects.filter(on_mongo=False)})
+                  {'periodo': ALLOWED_YEARS,
+                   'comunas': sector_list})
 
 
 @login_required
@@ -41,12 +43,15 @@ def show_data(request):
     years = [int(year) for year in request.GET["periodo"].split(',')]
     cities = [city for city in request.GET["comunas"].split(',')]
 
+    sectors = StravaData.objects.filter(sector__in=cities)
     all_bounds = []
     all_references = []
-    for city in cities:
-        city_data = get_city_data(city)
-        all_bounds.append(city_data[0])
-        all_references.append(city_data[1])
+    for s in sectors:
+        polygon = s.get_polygon(save=False)
+        if (polygon['success']):
+            city_data = get_city_data(polygon['polygon'])
+            all_bounds.append(city_data)
+            all_references.append(s.get_coords())
 
     center = get_middle_point(all_references)
     m, s = color_ride_map(all_bounds, center, years,

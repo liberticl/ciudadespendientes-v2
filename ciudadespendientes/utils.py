@@ -13,8 +13,8 @@ from andeschileong.settings import (
 # Creates the mongodb files to upload
 def create_features(geodata, max=10):
     features = []
-    if DEBUG:
-        geodata = geodata.head(max)
+    # if DEBUG:
+    #     geodata = geodata.head(max)
 
     for feature in geodata.iterfeatures():
         prop = feature.pop('properties', None)
@@ -90,14 +90,14 @@ def get_user_ip(ip):
         data.pop('org', None)
     else:
         data = data.get('error', None)
-    
+
     return {
-        'status': r.status_code,
+        'sucess': r.status_code == 200,
         'info': data
     }
 
 
-if __name__ == '__main__':
+def upload_data():
     client = MongoClient(MONGO_DB)
     db = client[MONGO_CP_DB]
     collection = db[CP_STRAVA_COLLECTION]
@@ -105,7 +105,16 @@ if __name__ == '__main__':
     print('Importando datos a MongoDB...')
     strava_to_mongo('data.zip', collection)
 
-    print(f'Creando puntos medios...')
+    print('Creando puntos medios...')
     create_middle_points(collection)
-    print(f'Finalizado!')
+    print('Finalizado!')
     client.close()
+
+
+def get_city_data(polygon):
+    gdf_city = polygon.set_crs("epsg:4326")
+    gdf_city = gdf_city.to_crs(crs=3857)
+    gdf_city['area'] = gdf_city['geometry'].area
+    data = gdf_city[gdf_city['area'] == gdf_city['area'].max()]
+    data = data.to_crs(crs=4326).to_dict()
+    return data['geometry'][0]

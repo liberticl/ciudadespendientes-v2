@@ -134,6 +134,13 @@ html, body {
   color: white;
 }
 
+.navigation {
+  margin: 0 2%;
+  text-align: center;
+  background-color: #fff;
+  border-radius: 1.5rem;
+}
+
 /* Custom page CSS */
 .container {
   max-width: 800px;
