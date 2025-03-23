@@ -12,17 +12,17 @@
             <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
 
                 <li class="nav-item">
+                    <a class="nav-link" href="https://andeschileong.cl">ANDES CHILE ONG</a>
                 </li>
-                <li><a class="nav-link" href="https://andeschileong.cl">ANDES CHILE ONG</a></li>
 
                 {% if user.is_authenticated %}
                 <li class="nav-item">
+                    <a class="nav-link" href="/">BIENVENIDO</a>
                 </li>
-                <li><a class="nav-link" href="/">BIENVENIDO</a></li>
 
                 <li class="nav-item">
+                    <a class="nav-link" href="/logout">CERRAR SESIÓN</a>
                 </li>
-                <li><a class="nav-link" href="/logout">CERRAR SESIÓN</a></li>
                 {% endif %}
 
             </ul>
