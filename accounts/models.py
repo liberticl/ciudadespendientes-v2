@@ -90,6 +90,9 @@ class Account(PermissionsMixin, AbstractBaseUser):
     def __str__(self):
         return self.email
 
+    def get_fullname(self):
+        return f'{self.first_name} {self.last_name}'
+
     def create_default_password(self):
         email = self.email.lower()
         user_name = email.split('@')
@@ -98,19 +101,30 @@ class Account(PermissionsMixin, AbstractBaseUser):
             user_name = first.split(sep)
 
         return user_name[0] + str(datetime.now().year)
-    
+
     def get_user_sectors(self):
         if (not self.is_superuser):
             user_zones = self.zones.prefetch_related(
                 Prefetch('sectores', queryset=StravaData.objects.all())
                     ).all()
             user_sectors = StravaData.objects.filter(
-            sectores__in=user_zones).distinct()
+                sectores__in=user_zones).distinct()
             sectors = user_sectors.values_list('sector', flat=True).distinct()
         else:
             sectors = StravaData.objects.filter(
                 on_mongo=True).values_list('sector', flat=True).distinct()
         return sectors if sectors else []
+
+    def get_organizations(self):
+        """
+            Retorna una lista con las organizaciones en las que se
+            se encuentra el usuario.
+        """
+        if self.is_superuser:
+            return Organization.objects.all()
+
+        orgs = list(self.organization.values_list('pk', flat=True))
+        return Organization.objects.filter(pk__in=orgs)
 
     # def send_email(self, password):
     #     """
@@ -127,3 +141,62 @@ class Account(PermissionsMixin, AbstractBaseUser):
     #         'email': self.email}
     #     send_email.delay(
     #         subject, to, template_name, context=context, tags=tags)
+
+
+class Organization(models.Model):
+    """
+        Representa una organización adscrita al uso de la plataforma.
+    """
+
+    is_active = models.BooleanField(
+        verbose_name='Activa', default=True,
+        help_text="Indica si la organización está activa en la plataforma.")
+    name = models.CharField(
+        max_length=100, verbose_name="Organización")
+    description = models.TextField("Descripción", blank=True, null=True)
+    organization_name = models.CharField(
+        u"Razón Social", max_length=255, null=True, blank=True)
+    rut = models.CharField("RUT", max_length=40, null=True, blank=True)
+    type = models.CharField(
+        "Tipo", max_length=255, null=True, blank=True,
+        help_text="Tipo de organización.")
+    contact_name = models.CharField(
+        "Persona de contacto", max_length=255, blank=True, null=True)
+    contact_phone = models.CharField(
+        "Telefono de contacto", max_length=255, blank=True, null=True)
+    contact_mail = models.EmailField(
+        "Email de contacto", max_length=255, blank=True, null=True)
+    country = models.CharField(
+        max_length=255, verbose_name='País', choices=COUNTRIES,
+        default='Chile')
+    big_zone = models.ForeignKey(
+        Zone, verbose_name='Zona principal',
+        blank=True, null=True, on_delete=models.PROTECT,
+        help_text="Zona más grande a ver por alguien de esta organización.")
+    region = models.CharField(
+        max_length=255, verbose_name='Región', blank=True, null=True)
+    comuna = models.CharField(
+        max_length=255, verbose_name='Comuna', blank=True, null=True)
+    address = models.CharField(
+        max_length=255, verbose_name='Dirección', blank=True, null=True,
+        help_text='Ej. Los Loros 66, C° La Cruz')
+    coords = models.CharField(
+        "Coordenadas", max_length=30,
+        help_text="Ubicación en el mapa. Ej: '-33.0458456,-71.6196749'.")
+    users = models.ManyToManyField(
+        Account, blank=True, verbose_name='Usuarios',
+        related_name='organization',
+        help_text='Usuarios con acceso a la plataforma')
+    website = models.CharField(
+        "Pagina Web", max_length=100, blank=True, null=True)
+    instagram = models.CharField(
+        "Instagram", max_length=100, blank=True, null=True)
+    social_media = models.CharField(
+        "Otras redes sociales", max_length=255, blank=True, null=True)
+    logo = models.ImageField(
+        "Logo", upload_to='logos', null=True, blank=True,
+        help_text='Logo de la empresa')
+
+    class Meta:
+        verbose_name = u'organización'
+        verbose_name_plural = u'Organizaciones'
