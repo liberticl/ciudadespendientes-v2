@@ -24,10 +24,6 @@ class StravaData(models.Model):
     month = models.CharField(
         "Mes", choices=choices.MONTHS, max_length=15, default='Todo el año',
         help_text="Mes al que pertenece el registro. Ej: Enero.")
-    # zone = models.ForeignKey(
-    #     Zone,
-    #     verbose_name='Zona', null=True, related_name='zones',
-    #     on_delete=models.PROTECT)
     osm_id = models.CharField(
         "ID OSM", max_length=15,
         help_text="Identificador en OpenStreetMaps. Ej: '110808'.")
