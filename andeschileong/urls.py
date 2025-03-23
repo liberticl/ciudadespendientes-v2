@@ -31,6 +31,7 @@ urlpatterns = [
     path('', views.index, name='buscar'),
     path('map/', views.show_data, name='show_data'),
     path('404/', views.error_404, name='error_404'),
+    path('403/', views.error_403, name='error_403'),
 ]
 
 

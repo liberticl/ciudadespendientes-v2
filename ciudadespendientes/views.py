@@ -10,7 +10,7 @@ from .utils import get_middle_point, get_city_data
 import pydeck as pdk
 from bs4 import BeautifulSoup
 from .models import StravaData
-from django.db.models import Prefetch
+from .decorators import user_has_zone_permission
 
 
 collection = settings.STRAVA_COLLECTION
@@ -22,37 +22,35 @@ ALLOWED_YEARS = [2019, 2020, 2021, 2022, 2023, 2024]
 
 
 @login_required
+@user_has_zone_permission
 def index(request):
-    if (not request.user.is_authenticated):
-        redirect('login')
-
     if request.method == "POST":
         years = request.POST.getlist("periodo")
         cities = request.POST.getlist("comunas")
 
         return redirect(reverse("show_data") + f"?periodo={','.join(years)}&comunas={','.join(cities)}")  # noqa
 
-    if (not request.user.is_superuser):
-        user_zones = request.user.zones.prefetch_related(
-            Prefetch('sectores', queryset=StravaData.objects.all())
-        ).all()
-        user_sectors = StravaData.objects.filter(
-            sectores__in=user_zones).distinct()
-        sectors = user_sectors.values_list('sector', flat=True).distinct()
-    else:
-        sectors = StravaData.objects.filter(
-            on_mongo=True).values_list('sector', flat=True).distinct()
+    sectors = request.user.get_user_sectors()
 
     return render(request, "ciudadespendientes/buscar.html",
                   {'periodo': ALLOWED_YEARS,
-                   'comunas': sectors if sectors else []})
+                   'comunas': sectors})
 
 
 @login_required
+@user_has_zone_permission
 def show_data(request):
     layercontrol = LayerControlForm(request.POST or None)
-    years = [int(year) for year in request.GET["periodo"].split(',')]
-    cities = [city for city in request.GET["comunas"].split(',')]
+    user_sectors = request.user.get_user_sectors()
+
+    try:
+        years = [int(year) for year in request.GET["periodo"].split(',')]
+        cities = [city for city in request.GET["comunas"].split(',') if city in user_sectors] # noqa
+    except Exception:
+        return redirect('error_404')
+
+    if (not cities):
+        return redirect('error_403')
 
     sectors = StravaData.objects.filter(sector__in=cities)
     all_bounds = []
@@ -79,6 +77,10 @@ def show_data(request):
 
 def error_404(request, exception=None):
     return render(request, '404.html', status=404)
+
+
+def error_403(request, exception=None):
+    return render(request, '403.html', status=403)
 
 
 def create_layer(valid, data, is_visible=False):

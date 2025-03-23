@@ -1,10 +1,11 @@
 from datetime import datetime
 from django.db import models
 from django.utils import timezone
+from django.db.models import Prefetch
 from django.core.validators import RegexValidator
 from django.contrib.auth.models import (BaseUserManager,
                                         AbstractBaseUser, PermissionsMixin)
-from ciudadespendientes.models import Zone
+from ciudadespendientes.models import Zone, StravaData
 from ciudadespendientes.choices import COUNTRIES
 
 SEPARATORS = ['_', '-', '.']
@@ -97,6 +98,19 @@ class Account(PermissionsMixin, AbstractBaseUser):
             user_name = first.split(sep)
 
         return user_name[0] + str(datetime.now().year)
+    
+    def get_user_sectors(self):
+        if (not self.is_superuser):
+            user_zones = self.zones.prefetch_related(
+                Prefetch('sectores', queryset=StravaData.objects.all())
+                    ).all()
+            user_sectors = StravaData.objects.filter(
+            sectores__in=user_zones).distinct()
+            sectors = user_sectors.values_list('sector', flat=True).distinct()
+        else:
+            sectors = StravaData.objects.filter(
+                on_mongo=True).values_list('sector', flat=True).distinct()
+        return sectors if sectors else []
 
     # def send_email(self, password):
     #     """
