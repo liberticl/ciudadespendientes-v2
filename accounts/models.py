@@ -11,6 +11,22 @@ from ciudadespendientes.choices import COUNTRIES
 SEPARATORS = ['_', '-', '.']
 
 
+class Permission(models.Model):
+    """
+        Permisos que puede tener un usuario en plataforma
+    """
+
+    name = models.CharField(max_length=100)
+    code = models.CharField(max_length=50, unique=True)
+
+    class Meta:
+        verbose_name = "Permiso"
+        verbose_name_plural = "Permisos"
+
+    def __str__(self):
+        return self.name
+ 
+
 class AccountManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
         if not email:
@@ -54,7 +70,9 @@ class Account(PermissionsMixin, AbstractBaseUser):
                                        verbose_name="Superusuario")
     date_joined = models.DateTimeField(
         "Fecha de registro", default=timezone.now)
-
+    permissions = models.ManyToManyField(
+        Permission, blank=True, verbose_name="Permisos",
+        help_text="Permisos que puede tener el usuario.")
     cellphone = models.CharField(
         verbose_name="Celular", max_length=56, blank=True,
         validators=[
@@ -92,6 +110,9 @@ class Account(PermissionsMixin, AbstractBaseUser):
 
     def get_fullname(self):
         return f'{self.first_name} {self.last_name}'
+    
+    def get_shortname(self):
+        return f'{self.first_name.split()[0]}'
 
     def create_default_password(self):
         email = self.email.lower()
@@ -103,17 +124,27 @@ class Account(PermissionsMixin, AbstractBaseUser):
         return user_name[0] + str(datetime.now().year)
 
     def get_user_sectors(self):
-        if (not self.is_superuser):
-            user_zones = self.zones.prefetch_related(
-                Prefetch('sectores', queryset=StravaData.objects.all())
-                    ).all()
-            user_sectors = StravaData.objects.filter(
-                sectores__in=user_zones).distinct()
-            sectors = user_sectors.values_list('sector', flat=True).distinct()
-        else:
-            sectors = StravaData.objects.filter(
+        if (self.is_superuser):
+            return  StravaData.objects.filter(
                 on_mongo=True).values_list('sector', flat=True).distinct()
+        user_zones = self.zones.prefetch_related(
+            Prefetch('sectores', queryset=StravaData.objects.all())
+                ).all()
+        user_sectors = StravaData.objects.filter(
+            sectores__in=user_zones).distinct()
+        sectors = user_sectors.values_list('sector', flat=True).distinct()
         return sectors if sectors else []
+    
+    def get_user_permissions(self):
+        if (self.is_superuser):
+            return Permission.objects.all()
+        return self.permissions.all()
+    
+    def has_permission(self, permission):
+        if (self.is_superuser):
+            return True
+        codes = [p.code for p in self.get_user_permissions()]
+        return True if permission in codes else False
 
     def get_organizations(self):
         """

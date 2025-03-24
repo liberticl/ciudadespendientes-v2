@@ -14,7 +14,7 @@ class AccountAdmin(UserAdmin):
         'email', '_get_fullname', '_get_organizations', 'cellphone',
         'country', 'is_active', 'last_login')
     list_filter = (
-        'is_active', 'country', 'zones',)
+        'is_active', 'country', 'zones', 'permissions',)
     fieldsets = (
         ('Información Personal', {
             'fields': (
@@ -23,7 +23,7 @@ class AccountAdmin(UserAdmin):
         ('Sobre el usuario', {
             'fields': ('is_active', 'is_demo', 'is_staff', 'is_superuser',)}),
         ('Accesos', {
-            'fields': ('zones',)}),
+            'fields': ('zones', 'permissions',)}),
         ('Fechas Importantes', {
             'fields': ('last_login', 'date_joined',)}),
         # ('Ajustes', {'fields': ('timezone', 'settings',)}),
@@ -37,7 +37,7 @@ class AccountAdmin(UserAdmin):
     search_fields = (
         'email', 'first_name', 'last_name',)
     ordering = ('email',)
-    filter_horizontal = ('zones',)
+    filter_horizontal = ('zones', 'permissions')
 
     def _get_fullname(self, obj):
         """
@@ -95,3 +95,9 @@ class OrganizationAdmin(admin.ModelAdmin):
                 'users', 'website', 'instagram', 'social_media', 'logo',)})
     )
     filter_horizontal = ('users',)
+
+
+@admin.register(models.Permission)
+class PermissionAdmin(admin.ModelAdmin):
+    list_display = ('name', 'code',)
+    list_filter = ('name', 'code',)

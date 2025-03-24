@@ -10,7 +10,7 @@ from .utils import get_middle_point, get_city_data
 import pydeck as pdk
 from bs4 import BeautifulSoup
 from .models import StravaData
-from .decorators import user_has_zone_permission
+from .decorators import user_has_zone_permission, user_has_permission
 
 
 collection = settings.STRAVA_COLLECTION
@@ -38,7 +38,23 @@ def index(request):
 
 
 @login_required
+def welcome(request):
+    if request.method == "POST":
+        years = request.POST.getlist("periodo")
+        cities = request.POST.getlist("comunas")
+
+        return redirect(reverse("show_data") + f"?periodo={','.join(years)}&comunas={','.join(cities)}")  # noqa
+
+    sectors = request.user.get_user_sectors()
+
+    return render(request, "ciudadespendientes/welcome.html",
+                  {'periodo': ALLOWED_YEARS,
+                   'comunas': sectors})
+
+
+@login_required
 @user_has_zone_permission
+@user_has_permission(permissions = ['view_strava_data'])
 def show_data(request):
     layercontrol = LayerControlForm(request.POST or None)
     user_sectors = request.user.get_user_sectors()
