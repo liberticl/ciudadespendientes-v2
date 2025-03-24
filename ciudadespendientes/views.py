@@ -50,7 +50,7 @@ def find(request):
 
 @login_required
 @user_has_zone_permission
-@user_has_permission(permissions = ['view_strava_data'])
+@user_has_permission(permissions=['view_strava_data'])
 def show_data(request):
     layercontrol = LayerControlForm(request.POST or None)
     user_sectors = request.user.get_user_sectors()

@@ -25,7 +25,7 @@ class Permission(models.Model):
 
     def __str__(self):
         return self.name
- 
+
 
 class AccountManager(BaseUserManager):
     def create_user(self, email, password=None, **extra_fields):
@@ -110,7 +110,7 @@ class Account(PermissionsMixin, AbstractBaseUser):
 
     def get_fullname(self):
         return f'{self.first_name} {self.last_name}'
-    
+
     def get_shortname(self):
         return f'{self.first_name.split()[0]}'
 
@@ -125,7 +125,7 @@ class Account(PermissionsMixin, AbstractBaseUser):
 
     def get_user_sectors(self):
         if (self.is_superuser):
-            return  StravaData.objects.filter(
+            return StravaData.objects.filter(
                 on_mongo=True).values_list('sector', flat=True).distinct()
         user_zones = self.zones.prefetch_related(
             Prefetch('sectores', queryset=StravaData.objects.all())
@@ -134,12 +134,12 @@ class Account(PermissionsMixin, AbstractBaseUser):
             sectores__in=user_zones).distinct()
         sectors = user_sectors.values_list('sector', flat=True).distinct()
         return sectors if sectors else []
-    
+
     def get_user_permissions(self):
         if (self.is_superuser):
             return Permission.objects.all()
         return self.permissions.all()
-    
+
     def has_permission(self, permission):
         if (self.is_superuser):
             return True
