@@ -152,7 +152,7 @@ class Account(PermissionsMixin, AbstractBaseUser):
             se encuentra el usuario.
         """
         if self.is_superuser:
-            return Organization.objects.all()
+            return Organization.objects.filter(name='Andes Chile ONG').first()
 
         orgs = list(self.organization.values_list('pk', flat=True))
         return Organization.objects.filter(pk__in=orgs)

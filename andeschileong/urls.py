@@ -28,8 +28,9 @@ urlpatterns = [
     path('logout/',
          auth_views.LogoutView.as_view(template_name='accounts/login.html'),
          name='logout'),
-    path('', views.index, name='buscar'),
+    path('buscar/', views.find, name='buscar'),
     path('map/', views.show_data, name='show_data'),
+    path('', views.welcome, name='welcome'),
     path('404/', views.error_404, name='error_404'),
     path('403/', views.error_403, name='error_403'),
 ]

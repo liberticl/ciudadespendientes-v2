@@ -190,7 +190,7 @@ DATABASES = {
 
 
 # Redirección del login y logout
-LOGIN_REDIRECT_URL = 'buscar'
+LOGIN_REDIRECT_URL = 'welcome'
 LOGOUT_REDIRECT_URL = 'login'
 LOGIN_URL = 'login'
 

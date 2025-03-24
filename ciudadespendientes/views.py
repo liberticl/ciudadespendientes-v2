@@ -22,8 +22,19 @@ ALLOWED_YEARS = [2019, 2020, 2021, 2022, 2023, 2024]
 
 
 @login_required
+def welcome(request):
+    user = request.user
+    organization = user.get_organizations()
+    permissions = [p.code for p in user.get_user_permissions()]
+    return render(request, "ciudadespendientes/welcome.html",
+                  {'user': user,
+                   'organization': organization,
+                   'permissions': permissions})
+
+
+@login_required
 @user_has_zone_permission
-def index(request):
+def find(request):
     if request.method == "POST":
         years = request.POST.getlist("periodo")
         cities = request.POST.getlist("comunas")
@@ -33,21 +44,6 @@ def index(request):
     sectors = request.user.get_user_sectors()
 
     return render(request, "ciudadespendientes/buscar.html",
-                  {'periodo': ALLOWED_YEARS,
-                   'comunas': sectors})
-
-
-@login_required
-def welcome(request):
-    if request.method == "POST":
-        years = request.POST.getlist("periodo")
-        cities = request.POST.getlist("comunas")
-
-        return redirect(reverse("show_data") + f"?periodo={','.join(years)}&comunas={','.join(cities)}")  # noqa
-
-    sectors = request.user.get_user_sectors()
-
-    return render(request, "ciudadespendientes/welcome.html",
                   {'periodo': ALLOWED_YEARS,
                    'comunas': sectors})
 
