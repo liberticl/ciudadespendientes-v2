@@ -80,7 +80,7 @@ def show_data(request):
     html_map = m.to_html(as_string=True)
     body_content = get_map_html(html_map)
     stats = [round(x) for x in s]
-    return render(request, 'ciudadespendientes/map.html', {
+    return render(request, 'ciudadespendientes/mapa.html', {
                   'stats': stats,
                   'content': body_content,
                   'form': layercontrol,
