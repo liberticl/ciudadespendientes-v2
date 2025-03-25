@@ -23,12 +23,12 @@ html, body {
 
 /* Wrapper for page login to push down footer */
 #login {
-  min-height: 80%;
+  min-height: 75%;
   position: relative;
   background: none;
   height: auto;
   margin: 0;
-  padding: 0 0 110px;
+  padding: 0;
   display: flex;
   align-items: center; /* Centra verticalmente */
   justify-content: center; 
