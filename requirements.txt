@@ -54,7 +54,7 @@ psycopg2-binary==2.9.10
 ptyprocess==0.7.0
 pure_eval==0.2.3
 pycodestyle==2.11.1
-pydeck==0.7.1
+pydeck==0.9.1
 pyflakes==3.2.0
 Pygments==2.18.0
 pymongo==4.3.3
