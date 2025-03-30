@@ -17,8 +17,6 @@ collection = settings.STRAVA_COLLECTION
 LAYER_COLORS = settings.LAYERS
 GREEN = settings.GREEN
 ALLOWED_YEARS = [2019, 2020, 2021, 2022, 2023, 2024]
-# ALLOWED_CITIES = ['Viña del Mar', 'Valparaíso',
-#                   'Villa Alemana', 'Quilpué', 'Concón', 'Melipilla']
 
 
 @login_required
@@ -61,10 +59,10 @@ def show_data(request):
     except Exception:
         return redirect('error_404')
 
-    if (not cities):
+    if (not cities or not years):
         return redirect('error_403')
 
-    sectors = StravaData.objects.filter(sector__in=cities)
+    sectors = StravaData.objects.filter(sector__in=cities, year__in=years)
     all_bounds = []
     all_references = []
     for s in sectors:
@@ -101,6 +99,7 @@ def create_layer(valid, data, is_visible=False):
     return pdk.Layer(
         "PathLayer",
         data=[],
+        id=data['color_txt'],
         get_path="coordinates",
         get_color=data['color'],
         get_width=data['width'],
