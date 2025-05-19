@@ -11,46 +11,28 @@
         {% include 'navbar.html' %}
     </div>
     <div class="map-container">
-        <!-- <form method="post">
-                {% csrf_token %}
-                {{ form.as_p }}
-                <button type="submit">Actualizar Mapa</button>
-            </form> -->
         {{ deckgl | safe }}
+        <div class="layer-controls">
+            {% for layer in layers %}
+                <label>
+                    <input type="checkbox" id="toggle-{{ layer.id }}"  {{ layer.visible }}> {{ layer.label }}
+                </label>
+                <br>
+            {% endfor %}
+        </div>
         <div class="legend">
-            {% if stats and stats|length >= 2 %}
-            <div style="display: flex; align-items: center; margin-right: 10px;">
-                <span style="text-align:center">
-                    <i
-                        style="display: inline-block; width: 50px; height: 5px; background: green; margin-right: 5px;"></i>
-                    <br>
-                    Menos que {{ stats.0|add:-1 }} viajes
-                    <br>
-                    (Flujo bajo)
-                </span>
-            </div>
-            <div style="display: flex; align-items: center; margin-right: 10px;">
-                <span style="text-align:center">
-                    <i
-                        style="display: inline-block; width: 50px; height: 5px; background: orange; margin-right: 5px;"></i>
-                    <br>
-                    Entre {{ stats.0 }} y {{ stats.0|add:stats.1|add:-1 }} viajes
-                    <br>
-                    (Flujo medio)
-                </span>
-            </div>
-            <div style="display: flex; align-items: center;">
-                <span style="text-align:center">
-                    <i style="display: inline-block; width: 50px; height: 5px; background: red; margin-right: 5px;"></i>
-                    <br>
-                    Más que {{ stats.0|add:stats.1 }} viajes
-                    <br>
-                    (Flujo alto)
-                </span>
-            </div>
-            {% else %}
-            <p>Datos de leyenda no disponibles.</p>
-            {% endif %}
+            {% for layer in layers %}
+                <div style="display: flex; align-items: center; margin-right: 10px;">
+                    <span style="text-align:center">
+                        <i
+                            style="display: inline-block; width: 50px; height: 5px; background: {{ layer.id }}; margin-right: 5px;"></i>
+                        <br>
+                        {{ layer.stats }}
+                        <br>
+                        ({{ layer.label }})
+                    </span>
+                </div>
+            {% endfor %}
         </div>
     </div>
 

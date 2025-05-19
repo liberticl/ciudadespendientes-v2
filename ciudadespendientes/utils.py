@@ -137,5 +137,44 @@ def get_html(html_text):
     html = links + scripts[:2]
     headers = [change_gl_version(str(h)) for h in html]
     gl_script = scripts[-1].string
-    deckgl = f'\n<div id="deck-container"></div>\n<script>{gl_script}</script>'  # noqa
+    update_script = """
+        document.addEventListener('DOMContentLoaded', function() {
+            // IDs de las capas y sus checkboxes correspondientes
+            const layerControls = {
+                'green': 'toggle-green',
+                'orange': 'toggle-orange',
+                'red': 'toggle-red'
+            };
+
+            // Añade evento a cada checkbox
+            Object.keys(layerControls).forEach(layerId => {
+                const checkbox = document.getElementById(layerControls[layerId]);
+                checkbox.addEventListener('change', function() {
+                    toggleLayer(layerId, this.checked);
+                });
+            });
+
+            // Función para activar/desactivar capas (basada en tu Método 2)
+            function toggleLayer(layerId, isVisible) {
+                if (!deckInstance) {
+                    console.error("deckInstance no está disponible");
+                    return;
+                }
+
+                const newLayers = deckInstance.props.layers.map(layer => {
+                    if (layer.id === layerId) {
+                        return new deck.Layer({
+                            ...layer,
+                            visible: isVisible
+                        });
+                    }
+                    return layer
+                });
+
+                deckInstance.setProps({ layers: newLayers });
+            }
+        })
+    """
+
+    deckgl = f'\n<div id="deck-container"></div>\n<script>{gl_script}\n{update_script}</script>'  # noqa
     return '\n'.join(headers), deckgl

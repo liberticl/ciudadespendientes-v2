@@ -17,18 +17,3 @@ class DataSearch(forms.Form):
         error_messages={'required': 'La fecha final es obligatoria.'},
         widget=forms.TextInput(
             attrs={'class': 'form-control datepicker-history'}))
-
-
-class LayerControlForm(forms.Form):
-    green = forms.BooleanField(
-        required=False,
-        initial=False
-    )
-    orange = forms.BooleanField(
-        required=False,
-        initial=True
-    )
-    red = forms.BooleanField(
-        required=False,
-        initial=True
-    )

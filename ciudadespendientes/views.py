@@ -1,6 +1,5 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
-from .forms import LayerControlForm
 from django.urls import reverse
 from django.conf import settings
 from .codes.plot_maps import (get_ride_from_mongo,
@@ -49,7 +48,6 @@ def find(request):
 @user_has_zone_permission
 @user_has_permission(permissions=['view_strava_data'])
 def show_data(request):
-    layercontrol = LayerControlForm(request.POST or None)
     user_sectors = request.user.get_user_sectors()
 
     try:
@@ -72,23 +70,35 @@ def show_data(request):
             all_references.append(s.get_coords())
 
     center = get_middle_point(all_references)
-    m, vs, s = color_ride_map(all_bounds, center, years,
-                          collection, anual=False, control=layercontrol)
-
-    # layers = m.to_json()
-    # view = vs.to_json()
-    # return render(request, 'ciudadespendientes/test.html', {
-    #     'jsonInput': layers,
-    #     'view_state': view
-    # })
+    m, s = color_ride_map(all_bounds, center, years,
+                          collection, anual=False)
+    
     html_map = m.to_html(as_string=True)
     headers, deckgl = get_html(html_map)
     stats = [round(x) for x in s]
     return render(request, 'ciudadespendientes/mapa.html', {
-                  'stats': stats,
                   'headers': headers,
                   'deckgl': deckgl,
-                  'form': layercontrol,
+                  'layers': [
+                      {
+                          'id': 'green',
+                          'visible': 'unchecked',
+                          'label': 'Flujo bajo',
+                          'stats': f"Menos que {stats[0] - 1} viajes"
+                      },
+                      {
+                          'id': 'orange',
+                          'visible': 'checked',
+                          'label': 'Flujo medio',
+                          'stats': f"Entre {stats[0]} y {stats[1] - 1} viajes"
+                      },
+                      {
+                          'id': 'red',
+                          'visible': 'checked',
+                          'label': 'Flujo alto',
+                          'stats': f"Más que {stats[1]} viajes"
+                      }
+                  ]
                   })
 
 
@@ -100,9 +110,8 @@ def error_403(request, exception=None):
     return render(request, '403.html', status=403)
 
 
-def create_layer(valid, data, is_visible=False):
-    # green = False if data['color_txt'] == GREEN else True
-    green = True
+def create_layer(data):
+    is_visible = False if data['color_txt'] == GREEN else True
     return pdk.Layer(
         "PathLayer",
         data=[],
@@ -112,12 +121,12 @@ def create_layer(valid, data, is_visible=False):
         get_width=data['width'],
         width_min_pixels=2,
         pickable=True,
-        visible=is_visible if valid else green,
+        visible=is_visible,
         name=data['label'],
     )
 
 
-def prepare_map(center, control=None):
+def prepare_map(center):
     view_state = pdk.ViewState(
         latitude=center[0],
         longitude=center[1],
@@ -126,20 +135,15 @@ def prepare_map(center, control=None):
     )
 
     layers = {}
-    valid = control and control.is_valid()
     for layer, data in LAYER_COLORS.items():
-        if (valid):
-            is_visible = control.cleaned_data.get(layer, None)
-            layers[layer] = create_layer(valid, data, is_visible=is_visible)
-        else:
-            layers[layer] = create_layer(False, data)
+        layers[layer] = create_layer(data)
 
     return (view_state, layers)
 
 
 def color_ride_map(city_bounds, center, years, collection,
-                   factor=1, anual=False, control=None):
-    view_state, layers = prepare_map(center, control=control)
+                   factor=1, anual=False):
+    view_state, layers = prepare_map(center)
     mongodata = get_ride_from_mongo(city_bounds, years, collection)
     ride_data, trip_count = process_ride_data(mongodata)
 
@@ -173,5 +177,5 @@ def color_ride_map(city_bounds, center, years, collection,
         tooltip={"text": "Viajes totales: {trips}"},
     )
 
-    return mapa, view_state, stats
+    return mapa, stats
 
