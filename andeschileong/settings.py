@@ -149,6 +149,7 @@ DB_USER = os.environ.get('DB_USER')
 DB_PASS = os.environ.get('DB_PASS')
 
 # Other
+DECKGL_VERSION = os.environ.get('DECKGL_VERSION', '8.9.*')
 DATA_DIR = os.environ.get('DATA_DIR')
 DEBUG = os.environ.get('DEBUG').capitalize() == 'True' if os.environ.get('DEBUG') else False  # noqa
 if (DEBUG):

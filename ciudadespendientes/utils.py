@@ -1,13 +1,15 @@
 import os
+import re
 import requests
 import pandas as pd
 import geopandas as gpd
 from .codes.mongodb import middle_points_aggregate
 from zipfile import ZipFile
+from bs4 import BeautifulSoup
 from pymongo import MongoClient, UpdateOne
 from andeschileong.settings import (
     MONGO_DB, MONGO_CP_DB, CP_STRAVA_COLLECTION,
-    DATA_DIR)
+    DATA_DIR, DECKGL_VERSION)
 
 
 # Creates the mongodb files to upload
@@ -118,3 +120,22 @@ def get_city_data(polygon):
     data = gdf_city[gdf_city['area'] == gdf_city['area'].max()]
     data = data.to_crs(crs=4326).to_dict()
     return data['geometry'][0]
+
+
+def change_gl_version(url: str):
+    match = re.search(r'@~(\d+\.\d+\.\*)', url)
+    if match:
+        return url.replace(match.group(1), DECKGL_VERSION)
+    else:
+        return url
+
+
+def get_html(html_text):
+    soup = BeautifulSoup(html_text, 'html.parser')
+    scripts = list(soup.find_all('script'))
+    links = list(soup.find_all('link'))
+    html = links + scripts[:2]
+    headers = [change_gl_version(str(h)) for h in html]
+    gl_script = scripts[-1].string
+    deckgl = f'\n<div id="deck-container"></div>\n<script>{gl_script}</script>'  # noqa
+    return '\n'.join(headers), deckgl

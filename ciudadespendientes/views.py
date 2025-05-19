@@ -6,9 +6,8 @@ from django.conf import settings
 from .codes.plot_maps import (get_ride_from_mongo,
                               process_ride_data)
 from .codes.classifier import get_statistics, classify
-from .utils import get_middle_point, get_city_data
+from .utils import (get_middle_point, get_city_data, get_html)
 import pydeck as pdk
-from bs4 import BeautifulSoup
 from .models import StravaData
 from .decorators import user_has_zone_permission, user_has_permission
 
@@ -73,14 +72,22 @@ def show_data(request):
             all_references.append(s.get_coords())
 
     center = get_middle_point(all_references)
-    m, s = color_ride_map(all_bounds, center, years,
+    m, vs, s = color_ride_map(all_bounds, center, years,
                           collection, anual=False, control=layercontrol)
+
+    # layers = m.to_json()
+    # view = vs.to_json()
+    # return render(request, 'ciudadespendientes/test.html', {
+    #     'jsonInput': layers,
+    #     'view_state': view
+    # })
     html_map = m.to_html(as_string=True)
-    body_content = get_map_html(html_map)
+    headers, deckgl = get_html(html_map)
     stats = [round(x) for x in s]
     return render(request, 'ciudadespendientes/mapa.html', {
                   'stats': stats,
-                  'content': body_content,
+                  'headers': headers,
+                  'deckgl': deckgl,
                   'form': layercontrol,
                   })
 
@@ -166,11 +173,5 @@ def color_ride_map(city_bounds, center, years, collection,
         tooltip={"text": "Viajes totales: {trips}"},
     )
 
-    return mapa, stats
+    return mapa, view_state, stats
 
-
-def get_map_html(html_text):
-    soup = BeautifulSoup(html_text, 'html.parser')
-    script = list(soup.find_all('script'))[-1].string
-    return ''.join(
-        str(child) for child in soup.body.children) + f"\n<script>{script}</script>"  # noqa

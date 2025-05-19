@@ -498,6 +498,21 @@ h5 a:hover {
   z-index: 1;
 }
 
+/* Deck Container */
+.mapboxgl-ctrl-bottom-right {
+  margin-right: 2%;
+}
+
+.mapboxgl-ctrl {
+  border-radius: 1.5rem;
+}
+
+#deck-container canvas {
+  border-radius: 1.5rem;
+  z-index: 1;
+  background: none;
+}
+
 #deckgl-overlay {
   z-index: 2;
   background: none;

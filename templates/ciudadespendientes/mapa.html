@@ -3,10 +3,7 @@
 
 <head>
     {% include 'head.html' %}
-    <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v1.13.0/mapbox-gl.js"></script>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css" />
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" />
-    <script src='https://cdn.jsdelivr.net/npm/@deck.gl/jupyter-widget@~8.5.*/dist/index.js'></script>
+    {{ headers | safe }}
 </head>
 
 <body>
@@ -19,7 +16,7 @@
                 {{ form.as_p }}
                 <button type="submit">Actualizar Mapa</button>
             </form> -->
-        {{ content | safe }}
+        {{ deckgl | safe }}
         <div class="legend">
             {% if stats and stats|length >= 2 %}
             <div style="display: flex; align-items: center; margin-right: 10px;">
