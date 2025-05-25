@@ -2,10 +2,9 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.conf import settings
-from .codes.plot_maps import (get_ride_from_mongo,
-                              process_ride_data)
-from .codes.classifier import get_statistics, classify
-from .utils import (get_middle_point, get_city_data, get_html)
+from .classifier import get_statistics, classify
+from .utils import (get_middle_point, get_city_data, get_html,
+                    get_ride_from_mongo, process_ride_data)
 import pydeck as pdk
 from .models import StravaData
 from .decorators import user_has_zone_permission, user_has_permission
@@ -20,7 +19,7 @@ ALLOWED_YEARS = [2019, 2020, 2021, 2022, 2023, 2024]
 @login_required
 def welcome(request):
     user = request.user
-    organization = user.get_organizations()
+    organization = user.get_first_organization()
     permissions = [p.code for p in user.get_user_permissions()]
     return render(request, "ciudadespendientes/welcome.html",
                   {'user': user,
@@ -41,7 +40,8 @@ def find(request):
 
     return render(request, "ciudadespendientes/buscar.html",
                   {'periodo': ALLOWED_YEARS,
-                   'comunas': sectors})
+                   'comunas': sectors,
+                   'organization': request.user.get_first_organization()})
 
 
 @login_required

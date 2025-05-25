@@ -6,6 +6,7 @@ from django.core.validators import RegexValidator
 from django.contrib.auth.models import (BaseUserManager,
                                         AbstractBaseUser, PermissionsMixin)
 from ciudadespendientes.models import Zone, StravaData
+from django.db.models.query import QuerySet
 from ciudadespendientes.choices import COUNTRIES
 
 SEPARATORS = ['_', '-', '.']
@@ -156,6 +157,16 @@ class Account(PermissionsMixin, AbstractBaseUser):
 
         orgs = list(self.organization.values_list('pk', flat=True))
         return Organization.objects.filter(pk__in=orgs)
+    
+    def get_first_organization(self):
+        """
+            Retorna la primera organización entre las que el usuario
+            se encuentra.
+        """
+        if isinstance(self.get_organizations(), QuerySet):
+            return self.get_organizations().first()
+        
+        return self.get_organizations()
 
     # def send_email(self, password):
     #     """

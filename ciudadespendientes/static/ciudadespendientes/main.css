@@ -2,10 +2,10 @@
 html, body {
   height: 100%;
   background-color: #ffffff00;
-  font-family: 'Source Sans Pro', sans-serif;
+  font-family: 'Urbanist', sans-serif;
   /* The html and body elements cannot have any padding or margin. */
   border-top: 3px solid #2241a8;
-  background-image: url(background.svg);
+  /* background-image: url(background.svg); */
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center center;
@@ -31,16 +31,17 @@ html, body {
   padding: 0;
   display: flex;
   align-items: center; /* Centra verticalmente */
-  justify-content: center; 
+  justify-content: center;
+  z-index: 10;
 }
 
 .login-container {
   width: 100%; /* Ajusta el ancho según sea necesario */
   max-width: 350px; /* Ajusta el ancho máximo según sea necesario */
   padding: 20px;
-  background-color: #fff;
+  background-color: #ffffffbb;
   border-radius: 1rem;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
 }
 
 .login-container label::before {
@@ -135,18 +136,19 @@ html, body {
 }
 
 .navigation {
-  margin: 0 2%;
+  margin: 0;
+  padding: 0 2%;
   text-align: center;
   background-color: #fff;
-  border-radius: 1rem;
 }
 
 /* Custom page CSS */
 .container {
   max-width: 800px;
   text-align: center;
-  background-color: #fff;
-  /* padding: 1%; */
+  margin-top: 5%;
+  background-color: #ffffffaa;
+  /* padding: 20px 0; */
   border-radius: 1rem;
 }
 

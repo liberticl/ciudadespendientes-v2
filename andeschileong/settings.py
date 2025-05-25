@@ -26,7 +26,7 @@ AUTH_USER_MODEL = "accounts.Account"
 SECRET_KEY = 'django-insecure-v&+z-v1e*+zt(qy!1%r*0ub^venalwn+x2wkl^tnsmumc13nx6'  # noqa
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('DEBUG').capitalize() == 'True' if os.environ.get('DEBUG') else False  # noqa
 
 ALLOWED_HOSTS = ['v2.ciudadespendientes.cl',
                  'ciudadespendientes-v2-production.up.railway.app',
@@ -151,7 +151,6 @@ DB_PASS = os.environ.get('DB_PASS')
 # Other
 DECKGL_VERSION = os.environ.get('DECKGL_VERSION', '8.9.*')
 DATA_DIR = os.environ.get('DATA_DIR')
-DEBUG = os.environ.get('DEBUG').capitalize() == 'True' if os.environ.get('DEBUG') else False  # noqa
 if (DEBUG):
     ALLOWED_HOSTS = ['*']
 
@@ -168,7 +167,7 @@ LOGGING = {
     'loggers': {
         'django': {
             'handlers': ['file'],
-            'level': 'DEBUG',
+            'level': 'INFO',
             'propagate': True,
         },
     },
