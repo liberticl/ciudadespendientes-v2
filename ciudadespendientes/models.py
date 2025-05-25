@@ -72,7 +72,6 @@ class StravaData(models.Model):
             return ans.status_code
         gdf = gpd.read_file(ans.text)
         gdf = gdf.explode(index_parts=False)
-        # print(f"Búsqueda de polígono finalizada con status {ans.status_code}")
         return {
             'success': ans.status_code == 200,
             'polygon': gdf

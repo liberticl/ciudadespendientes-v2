@@ -72,7 +72,7 @@ def show_data(request):
     center = get_middle_point(all_references)
     m, s = color_ride_map(all_bounds, center, years,
                           collection, anual=False)
-    
+
     html_map = m.to_html(as_string=True)
     headers, deckgl = get_html(html_map)
     stats = [round(x) for x in s]
@@ -178,4 +178,3 @@ def color_ride_map(city_bounds, center, years, collection,
     )
 
     return mapa, stats
-

@@ -7,7 +7,7 @@ from .mongodb import middle_points_aggregate, points_inside
 from zipfile import ZipFile
 from bs4 import BeautifulSoup
 from pymongo import MongoClient, UpdateOne
-from shapely.geometry import Point, Polygon
+from shapely.geometry import Polygon
 from andeschileong.settings import (
     MONGO_DB, MONGO_CP_DB, CP_STRAVA_COLLECTION,
     DATA_DIR, DECKGL_VERSION)

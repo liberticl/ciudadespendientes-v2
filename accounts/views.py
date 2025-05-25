@@ -33,4 +33,3 @@ class CustomLoginView(LoginView):
             'bogon': data.get('bogon', False),
             'loc': data.get('loc', '-33.0498108,-71.6213084')
         }
-
