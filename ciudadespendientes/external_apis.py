@@ -22,8 +22,11 @@ def get_osm_relation(place: str):
 def get_place_polygon(place):
     data = get_osm_relation(place)
     relation = data[0]
-    url = f'http://polygons.openstreetmap.fr/get_geojson.py?id={relation}&params=0' # noqa
-    ans = requests.get(url, timeout=5)
-    gdf = gpd.read_file(ans.text)
-    gdf = gdf.explode(index_parts=False)
-    return [gdf, data[1]]
+    try:
+        url = f'http://polygons.openstreetmap.fr/get_geojson.py?id={relation}&params=0' # noqa
+        ans = requests.get(url, timeout=10)
+        gdf = gpd.read_file(ans.text)
+        gdf = gdf.explode(index_parts=False)
+        return [gdf, data[1]]
+    except Exception:
+        return []

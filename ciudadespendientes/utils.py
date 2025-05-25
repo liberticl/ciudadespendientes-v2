@@ -3,10 +3,11 @@ import re
 import requests
 import pandas as pd
 import geopandas as gpd
-from .codes.mongodb import middle_points_aggregate
+from .mongodb import middle_points_aggregate, points_inside
 from zipfile import ZipFile
 from bs4 import BeautifulSoup
 from pymongo import MongoClient, UpdateOne
+from shapely.geometry import Point, Polygon
 from andeschileong.settings import (
     MONGO_DB, MONGO_CP_DB, CP_STRAVA_COLLECTION,
     DATA_DIR, DECKGL_VERSION)
@@ -81,6 +82,36 @@ def get_middle_point(references):
         references_sum = [x + y for x, y in zip(references_sum, ref)]
 
     return tuple([element / len(references) for element in references_sum])
+
+
+def get_ride_from_mongo(city_bounds, years, collection):
+    full_coords = []
+    for bounds in city_bounds:
+        coords = list(Polygon(bounds).exterior.coords)
+        coords = [[round(x, 6), round(y, 6)] for x, y in coords]
+        coords = [coords + [coords[0]]]
+        full_coords.append(coords)
+    del coords
+
+    projection = ['total_trip_count', 'geometry']
+    pipeline = points_inside
+    inside = pipeline[0]['$match']
+    inside['middlePoint']['$geoWithin']['$geometry']['coordinates'] = full_coords  # noqa
+    inside['year']['$in'] = years
+    pipeline[1]['$project'] = {'_id': 0, **dict.fromkeys(projection, 1)}
+
+    return collection.aggregate(pipeline)
+
+
+def process_ride_data(mongodata):
+    ride_data = []
+    trip_count = []
+    for item in mongodata:
+        coords = item['_id']['coordinates']
+        total_trip_count = item['total_trip_count']
+        ride_data.append((coords, total_trip_count))
+        trip_count.append(total_trip_count)
+    return (ride_data, trip_count)
 
 
 def get_user_ip(ip):

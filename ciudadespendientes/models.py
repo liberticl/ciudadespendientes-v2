@@ -66,7 +66,7 @@ class StravaData(models.Model):
     def get_polygon(self, save=True):
         gdf = None
         url = f'http://polygons.openstreetmap.fr/get_geojson.py?id={self.osm_id}&params=0'  # noqa
-        ans = requests.get(url, timeout=5)
+        ans = requests.get(url, timeout=10)
         if (ans.status_code == 200 and save):
             self.save()
             return ans.status_code
