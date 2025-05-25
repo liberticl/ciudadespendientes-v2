@@ -113,7 +113,16 @@ class Account(PermissionsMixin, AbstractBaseUser):
         return f'{self.first_name} {self.last_name}'
 
     def get_shortname(self):
-        return f'{self.first_name.split()[0]}'
+        if self.first_name:
+            return f'{self.first_name.split()[0]}'
+        
+        email = self.email.lower()
+        user_name = email.split('@')
+        for sep in SEPARATORS:
+            first = user_name[0]
+            user_name = first.split(sep)
+        return f'{user_name[0]}'
+
 
     def create_default_password(self):
         email = self.email.lower()
@@ -157,7 +166,7 @@ class Account(PermissionsMixin, AbstractBaseUser):
 
         orgs = list(self.organization.values_list('pk', flat=True))
         return Organization.objects.filter(pk__in=orgs)
-    
+
     def get_first_organization(self):
         """
             Retorna la primera organización entre las que el usuario
@@ -165,7 +174,7 @@ class Account(PermissionsMixin, AbstractBaseUser):
         """
         if isinstance(self.get_organizations(), QuerySet):
             return self.get_organizations().first()
-        
+
         return self.get_organizations()
 
     # def send_email(self, password):
