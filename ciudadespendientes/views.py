@@ -147,8 +147,7 @@ def color_ride_map(city_bounds, center, years, collection,
     mongodata = get_ride_from_mongo(city_bounds, years, collection)
     ride_data, trip_count = process_ride_data(mongodata)
 
-    stats = get_statistics(
-        trip_count, years) if anual else get_statistics(trip_count)
+    stats = get_statistics(trip_count, years)
 
     # Clasificar y agregar datos a las capas
     for coords, trips in ride_data:
