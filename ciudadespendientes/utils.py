@@ -3,11 +3,12 @@ import re
 import requests
 import pandas as pd
 import geopandas as gpd
-from .mongodb import middle_points_aggregate, points_inside
+from .mongodb import middle_points_aggregate, points_inside #, points_inside_2
 from zipfile import ZipFile
 from bs4 import BeautifulSoup
 from pymongo import MongoClient, UpdateOne
 from shapely.geometry import Polygon
+# from .decorators import calculate_execution_time
 from andeschileong.settings import (
     MONGO_DB, MONGO_CP_DB, CP_STRAVA_COLLECTION,
     DATA_DIR, DECKGL_VERSION)
@@ -16,9 +17,6 @@ from andeschileong.settings import (
 # Creates the mongodb files to upload
 def create_features(geodata, max=10):
     features = []
-    # if DEBUG:
-    #     geodata = geodata.head(max)
-
     for feature in geodata.iterfeatures():
         prop = feature.pop('properties', None)
         if prop:
@@ -83,8 +81,8 @@ def get_middle_point(references):
 
     return tuple([element / len(references) for element in references_sum])
 
-
-def get_ride_from_mongo(city_bounds, years, collection):
+# @calculate_execution_time
+def get_ride_from_mongo(city_bounds, years, collection, osm_ids = []):
     full_coords = []
     for bounds in city_bounds:
         coords = list(Polygon(bounds).exterior.coords)
@@ -97,6 +95,9 @@ def get_ride_from_mongo(city_bounds, years, collection):
     pipeline = points_inside
     inside = pipeline[0]['$match']
     inside['middlePoint']['$geoWithin']['$geometry']['coordinates'] = full_coords  # noqa
+    # pipeline = points_inside_2
+    # inside = pipeline[0]['$match']
+    # inside['osmId']['$in'] = osm_ids
     inside['year']['$in'] = years
     pipeline[1]['$project'] = {'_id': 0, **dict.fromkeys(projection, 1)}
 

@@ -48,6 +48,22 @@ points_inside = [
     }
 ]
 
+points_inside_2 = [
+    {'$match': {
+        'year': {'$in': '<yearsArray>'},
+        'osmId': { '$in': '<osmIdsArray>'}
+        }
+    },
+    {
+        '$project': '<projection>'
+    },
+    {'$group': {
+        '_id': '$geometry',
+        'total_trip_count': {'$sum': '$total_trip_count'}
+        }
+    }
+]
+
 map_middle_point = [
     {'$match': {
         'year': 2023,

@@ -36,7 +36,7 @@ def find(request):
 
         return redirect(reverse("show_data") + f"?periodo={','.join(years)}&comunas={','.join(cities)}")  # noqa
 
-    sectors = request.user.get_user_sectors()
+    sectors = request.user.get_user_zones()
 
     return render(request, "ciudadespendientes/buscar.html",
                   {'periodo': ALLOWED_YEARS,
@@ -48,7 +48,7 @@ def find(request):
 @user_has_zone_permission
 @user_has_permission(permissions=['view_strava_data'])
 def show_data(request):
-    user_sectors = request.user.get_user_sectors()
+    user_sectors = request.user.get_user_zones()
 
     try:
         years = [int(year) for year in request.GET["periodo"].split(',')]
@@ -59,18 +59,20 @@ def show_data(request):
     if (not cities or not years):
         return redirect('error_403')
 
-    sectors = StravaData.objects.filter(sector__in=cities, year__in=years)
+    sectors = StravaData.objects.filter(sector__name__in=cities, year__in=years)
     all_bounds = []
     all_references = []
+    # all_ids = []
     for s in sectors:
+        # all_ids.extend(s.sector.mapped_ways)
         polygon = s.get_polygon(save=False)
         if (polygon['success']):
             city_data = get_city_data(polygon['polygon'])
             all_bounds.append(city_data)
-            all_references.append(s.get_coords())
+            all_references.append(s.get_sector_coords())
 
     center = get_middle_point(all_references)
-    m, s = color_ride_map(all_bounds, center, years,
+    m, s = color_ride_map(all_bounds, center, years, # all_ids,
                           collection, anual=False)
 
     html_map = m.to_html(as_string=True)
@@ -144,7 +146,7 @@ def prepare_map(center):
 def color_ride_map(city_bounds, center, years, collection,
                    factor=1, anual=False):
     view_state, layers = prepare_map(center)
-    mongodata = get_ride_from_mongo(city_bounds, years, collection)
+    mongodata = get_ride_from_mongo(city_bounds, years, collection) #, osm_ids=osm_ids)
     ride_data, trip_count = process_ride_data(mongodata)
 
     stats = get_statistics(trip_count, years)

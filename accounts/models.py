@@ -115,14 +115,13 @@ class Account(PermissionsMixin, AbstractBaseUser):
     def get_shortname(self):
         if self.first_name:
             return f'{self.first_name.split()[0]}'
-        
+
         email = self.email.lower()
         user_name = email.split('@')
         for sep in SEPARATORS:
             first = user_name[0]
             user_name = first.split(sep)
         return f'{user_name[0]}'
-
 
     def create_default_password(self):
         email = self.email.lower()
@@ -133,16 +132,17 @@ class Account(PermissionsMixin, AbstractBaseUser):
 
         return user_name[0] + str(datetime.now().year)
 
-    def get_user_sectors(self):
+    def get_user_zones(self):
         if (self.is_superuser):
             return StravaData.objects.filter(
-                on_mongo=True).values_list('sector', flat=True).distinct()
+                on_mongo=True).values_list('sector__name', flat=True).distinct()  # noqa
         user_zones = self.zones.prefetch_related(
-            Prefetch('sectores', queryset=StravaData.objects.all())
-                ).all()
+            Prefetch('sector',
+                     queryset=StravaData.objects.filter(on_mongo=True))
+            ).all()
         user_sectors = StravaData.objects.filter(
-            sectores__in=user_zones).distinct()
-        sectors = user_sectors.values_list('sector', flat=True).distinct()
+            sector__in=user_zones).distinct()
+        sectors = user_sectors.values_list('sector__name', flat=True).distinct()
         return sectors if sectors else []
 
     def get_user_permissions(self):

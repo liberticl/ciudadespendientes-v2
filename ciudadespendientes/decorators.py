@@ -3,6 +3,7 @@ from django.core.exceptions import PermissionDenied
 from functools import wraps
 from .models import StravaData
 from django.db.models import Prefetch
+import time
 
 
 def user_has_zone_permission(view_func):
@@ -19,11 +20,11 @@ def user_has_zone_permission(view_func):
             return view_func(request, *args, **kwargs)
 
         user_zones = request.user.zones.prefetch_related(
-            Prefetch('sectores', queryset=StravaData.objects.all())
+            Prefetch('sector__name', queryset=StravaData.objects.all())
         ).all()
         user_sectors = StravaData.objects.filter(
-            sectores__in=user_zones).distinct()
-        sectors = user_sectors.values_list('sector', flat=True).distinct()
+            sector__in=user_zones).distinct()
+        sectors = user_sectors.values_list('sector__name', flat=True).distinct()
 
         if not sectors:
             raise PermissionDenied(
@@ -58,3 +59,19 @@ def user_has_permission(permissions):
             return view_func(request, *args, **kwargs)
         return _wrapped_view
     return decorator
+
+
+def calculate_execution_time(func):
+    """
+    Un decorador que imprime el tiempo de ejecución de la función que decora.
+    """
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        inicio = time.perf_counter()  # Inicia el contador de alta precisión
+        resultado = func(*args, **kwargs) # Ejecuta la función original
+        fin = time.perf_counter()    # Detiene el contador
+        
+        duracion = fin - inicio
+        print(f"La función '{func.__name__}' tardó {duracion:.4f} segundos en ejecutarse.")
+        return resultado
+    return wrapper

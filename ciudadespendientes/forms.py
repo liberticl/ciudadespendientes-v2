@@ -3,7 +3,7 @@ from django import forms
 
 class DataSearch(forms.Form):
     cities = forms.MultipleChoiceField(
-        label='Sectores', choices=[('', 'Seleccionar')],
+        label='sector', choices=[('', 'Seleccionar')],
         error_messages={'required': 'Debes escoger al menos un sector.'},
         widget=forms.SelectMultiple(attrs={
             'class': 'form-control multiselect'}))
