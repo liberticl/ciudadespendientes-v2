@@ -2,6 +2,7 @@ from rest_framework import authentication
 from rest_framework.exceptions import AuthenticationFailed
 from .models import Device
 
+
 class TokenAuthentication(authentication.BaseAuthentication):
     def authenticate(self, request):
         auth_header = request.headers.get('Authorization')

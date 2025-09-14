@@ -1,5 +1,4 @@
 from django.db import models
-from django.contrib.gis.db import models as gis_models
 
 
 class Device(models.Model):
@@ -7,7 +6,8 @@ class Device(models.Model):
     Modelo para gestionar dispositivos, su ubicación y tokens únicos.
     """
     device_name = models.CharField(
-        max_length=100, unique=True, help_text="Nombre único para el dispositivo")
+        max_length=100, unique=True,
+        help_text="Nombre único para el dispositivo")
     token = models.CharField(
         max_length=64, unique=True,
         help_text="Token de autenticación único para el dispositivo")
@@ -37,4 +37,4 @@ class TrafficCount(models.Model):
         ordering = ['-datetime']
 
     def __str__(self):
-        return f"Conteo de tráfico de {self.device.device_name} en {self.datetime}"
+        return f"Conteo de tráfico de {self.device.device_name} en {self.datetime}" # noqa

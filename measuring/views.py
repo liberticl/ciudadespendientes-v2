@@ -9,7 +9,8 @@ class TrafficCountAPIView(APIView):
     authentication_classes = [TokenAuthentication]
 
     def post(self, request):
-        serializer = TrafficCountSerializer(data=request.data, context={'request': request})
+        serializer = TrafficCountSerializer(
+            data=request.data, context={'request': request})
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)

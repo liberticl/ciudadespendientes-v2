@@ -142,7 +142,7 @@ class Account(PermissionsMixin, AbstractBaseUser):
             ).all()
         user_sectors = StravaData.objects.filter(
             sector__in=user_zones).distinct()
-        sectors = user_sectors.values_list('sector__name', flat=True).distinct()
+        sectors = user_sectors.values_list('sector__name', flat=True).distinct() # noqa
         return sectors if sectors else []
 
     def get_user_permissions(self):
