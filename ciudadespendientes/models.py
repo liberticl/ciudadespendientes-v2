@@ -6,6 +6,11 @@ from django.conf import settings
 from django.db.models.signals import pre_save
 
 
+# TO-DO
+# Consulta con todos los OSM ID en overpass-turbo
+# [out:json];rel(110808);map_to_area;(way(area)[highway];);out geom; (son ~10MB)
+# Ver cómo usar esto    
+
 class Zone(models.Model):
     """
         Una zona es un lugar al que un usuario puede tener acceso de
