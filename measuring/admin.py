@@ -6,14 +6,14 @@ class DeviceAdmin(admin.ModelAdmin):
     """
         Sitio administrativo para Device
     """
-    list_display = ('device', 'token')
-    list_filter = ('device', 'token',)
-    search_fields = ('device', 'token', 'coords')
+    list_display = ('name', 'token')
+    list_filter = ('name', 'token',)
+    search_fields = ('name', 'token', 'coords')
     readonly_fields = ('token',)
     fieldsets = (
         ('General', {
             'fields': (
-                'device', 'token', 'coords',)}),
+                'name', 'token', 'coords',)}),
     )
     # filter_horizontal = ('sectors',)
 
