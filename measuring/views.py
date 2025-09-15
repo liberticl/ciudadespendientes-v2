@@ -12,6 +12,13 @@ class TrafficCountAPIView(APIView):
         serializer = TrafficCountSerializer(
             data=request.data, context={'request': request})
 
+        device = request.user
+        if (not device) or (device and not device.is_active):
+            err = "El dispositivo no está activo"
+            return Response(
+                {'status': False, 'errors': {"inactive": [err]}},
+                status=status.HTTP_403_FORBIDDEN)
+
         if serializer.is_valid():
             serializer.save()
             return Response(

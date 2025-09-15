@@ -17,10 +17,6 @@ class TrafficCountSerializer(serializers.ModelSerializer):
         Garantiza que el campo datetime esté siempre presente y los demás
         campos numéricos se inicialicen a cero si faltan.
         """
-        device = self.context['request'].user
-        if not device.is_active:
-            raise serializers.ValidationError(
-                {"device": "El dispositivo no está activo."})
 
         if 'datetime' not in data:
             raise serializers.ValidationError(
