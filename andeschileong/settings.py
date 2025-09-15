@@ -219,3 +219,6 @@ LAYERS = {
         'label': 'Flujo alto'
         }
 }
+
+# Others
+CP_JWT_SECRET = os.environ.get('CP_JWT_SECRET')

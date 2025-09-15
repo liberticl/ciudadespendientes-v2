@@ -15,7 +15,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 # from django.conf.urls import handler404
 from ciudadespendientes import views
 from django.contrib.auth import views as auth_views
@@ -32,6 +32,9 @@ urlpatterns = [
     path('', views.welcome, name='welcome'),
     path('404/', views.error_404, name='error_404'),
     path('403/', views.error_403, name='error_403'),
+
+    # Measuring
+    path('api/', include('measuring.urls')),
 ]
 
 
