@@ -11,5 +11,6 @@ debug.log
 *__pycache__*
 *migrations/
 ciudadespendientes/migrations/__pycache__/__init__.cpython-311.pyc
+ciudadespendientes/data
 *.log
 *cpython*

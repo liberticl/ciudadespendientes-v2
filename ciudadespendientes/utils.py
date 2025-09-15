@@ -3,7 +3,7 @@ import re
 import requests
 import pandas as pd
 import geopandas as gpd
-from .mongodb import middle_points_aggregate, points_inside #, points_inside_2
+from .mongodb import middle_points_aggregate, points_inside
 from zipfile import ZipFile
 from bs4 import BeautifulSoup
 from pymongo import MongoClient, UpdateOne
@@ -81,8 +81,9 @@ def get_middle_point(references):
 
     return tuple([element / len(references) for element in references_sum])
 
+
 # @calculate_execution_time
-def get_ride_from_mongo(city_bounds, years, collection, osm_ids = []):
+def get_ride_from_mongo(city_bounds, years, collection, osm_ids=[]):
     full_coords = []
     for bounds in city_bounds:
         coords = list(Polygon(bounds).exterior.coords)

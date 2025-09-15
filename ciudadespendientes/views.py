@@ -59,7 +59,8 @@ def show_data(request):
     if (not cities or not years):
         return redirect('error_403')
 
-    sectors = StravaData.objects.filter(sector__name__in=cities, year__in=years)
+    sectors = StravaData.objects.filter(
+        sector__name__in=cities, year__in=years)
     all_bounds = []
     all_references = []
     # all_ids = []
@@ -72,7 +73,7 @@ def show_data(request):
             all_references.append(s.get_sector_coords())
 
     center = get_middle_point(all_references)
-    m, s = color_ride_map(all_bounds, center, years, # all_ids,
+    m, s = color_ride_map(all_bounds, center, years,  # all_ids,
                           collection, anual=False)
 
     html_map = m.to_html(as_string=True)
@@ -146,7 +147,7 @@ def prepare_map(center):
 def color_ride_map(city_bounds, center, years, collection,
                    factor=1, anual=False):
     view_state, layers = prepare_map(center)
-    mongodata = get_ride_from_mongo(city_bounds, years, collection) #, osm_ids=osm_ids)
+    mongodata = get_ride_from_mongo(city_bounds, years, collection)
     ride_data, trip_count = process_ride_data(mongodata)
 
     stats = get_statistics(trip_count, years)

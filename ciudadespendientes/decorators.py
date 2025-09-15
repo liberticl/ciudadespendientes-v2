@@ -24,7 +24,7 @@ def user_has_zone_permission(view_func):
         ).all()
         user_sectors = StravaData.objects.filter(
             sector__in=user_zones).distinct()
-        sectors = user_sectors.values_list('sector__name', flat=True).distinct()
+        sectors = user_sectors.values_list('sector__name', flat=True).distinct() # noqa
 
         if not sectors:
             raise PermissionDenied(
@@ -68,10 +68,10 @@ def calculate_execution_time(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
         inicio = time.perf_counter()  # Inicia el contador de alta precisión
-        resultado = func(*args, **kwargs) # Ejecuta la función original
+        resultado = func(*args, **kwargs)  # Ejecuta la función original
         fin = time.perf_counter()    # Detiene el contador
-        
+
         duracion = fin - inicio
-        print(f"La función '{func.__name__}' tardó {duracion:.4f} segundos en ejecutarse.")
+        print(f"La función '{func.__name__}' tardó {duracion:.4f} segundos en ejecutarse.") # noqa
         return resultado
     return wrapper

@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'ciudadespendientes',
     'accounts',
+    'measuring',
 ]
 
 MIDDLEWARE = [
@@ -218,3 +219,6 @@ LAYERS = {
         'label': 'Flujo alto'
         }
 }
+
+# Others
+CP_JWT_SECRET = os.environ.get('CP_JWT_SECRET')

@@ -6,6 +6,11 @@ from django.conf import settings
 from django.db.models.signals import pre_save
 
 
+# TO-DO
+# Consulta con todos los OSM ID en overpass-turbo
+# [out:json];rel(110808);map_to_area;(way(area)[highway];);out geom; (son~10MB)
+# Ver cómo usar esto
+
 class Zone(models.Model):
     """
         Una zona es un lugar al que un usuario puede tener acceso de
@@ -34,7 +39,7 @@ class Zone(models.Model):
 
     def __str__(self):
         return f"{self.name} - {self.zone_type}"
-    
+
     def get_coords(self):
         lat, lon = map(float, self.coords.split(','))
         return (lat, lon)
@@ -63,13 +68,13 @@ class Zone(models.Model):
                 return [osmid, center]
         print("No se ha encontrado información")
         return []
-    
+
     def get_mapped_ways(self, osm_id, save=True):
         """
             Obtiene las vías mapeadas según el OSM ID asociado
             a la zona de interés.
         """
-        url = f'https://overpass-api.de/api/interpreter'
+        url = 'https://overpass-api.de/api/interpreter'
         query = f'[out:json];rel({osm_id});map_to_area;(way(area)[highway~"cycleway|path|road"];);out geom;' # noqa
         headers = {
             'Referer': settings.CSRF_TRUSTED_ORIGINS[0],
@@ -99,7 +104,6 @@ class Zone(models.Model):
             instance.get_mapped_ways(osm_id)
 
 
-
 pre_save.connect(Zone.before_save, sender=Zone)
 
 
@@ -114,7 +118,7 @@ class StravaData(models.Model):
         "Cargado en MongoDB",
         help_text="Indica si los datos se encuentran disponibles en MongoDB")
     sector = models.ForeignKey(
-        Zone, on_delete=models.CASCADE,  # Si se borra el sector, se borran sus registros de datos
+        Zone, on_delete=models.CASCADE,
         related_name="sector", verbose_name="Sector"
     )
     year = models.IntegerField(
@@ -126,7 +130,7 @@ class StravaData(models.Model):
 
     def __str__(self):
         return f"{self.sector} - {self.get_month_display()} {self.year}"
-    
+
     def get_polygon(self, save=True):
         gdf = None
         osm_id = self.sector.osm_id
@@ -141,7 +145,7 @@ class StravaData(models.Model):
             'success': ans.status_code == 200,
             'polygon': gdf
         }
-    
+
     def get_sector_coords(self):
         lat, lon = map(float, self.sector.coords.split(','))
         return (lat, lon)

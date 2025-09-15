@@ -2,7 +2,6 @@ from django.contrib import admin
 from easy_select2 import Select2
 from . import models
 from django.db import models as mod
-from django.http.request import HttpRequest
 
 
 @admin.register(models.Zone)
