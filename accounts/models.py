@@ -78,7 +78,7 @@ class Account(PermissionsMixin, AbstractBaseUser):
         verbose_name="Celular", max_length=56, blank=True,
         validators=[
             RegexValidator(
-                r"^\+?\d{11}$",
+                r"^\+?\d{10-14}$",
                 "Sólo numeros en formato internacional (+56912345678).",
                 "Número inválido"
             )
