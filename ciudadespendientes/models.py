@@ -49,7 +49,7 @@ class Zone(models.Model):
             Obtiene OSM ID y coordenadas de un polígono según el
             lugar que representa.
         """
-        url = f'https://nominatim.openstreetmap.org/search?q={self.name}&format=json'  # noqa
+        url = f'https://nominatim.openstreetmap.org/search?q={self.name},%20{self.country}&format=json'  # noqa
         headers = {
             'Referer': settings.CSRF_TRUSTED_ORIGINS[0],
             'User-Agent': 'Urban planning by Andes Chile ONG'
