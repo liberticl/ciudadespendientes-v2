@@ -27,7 +27,7 @@ MONTHS = (
     ('10', 'Octubre'),
     ('11', 'Noviembre'),
     ('12', 'Diciembre'),
-    ('13', 'Todo el año'),
+    ('Todo el año', 'Todo el año'),
 )
 
 YEARS = (

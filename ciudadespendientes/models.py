@@ -44,7 +44,7 @@ class Zone(models.Model):
         lat, lon = map(float, self.coords.split(','))
         return (lat, lon)
 
-    def get_osm_data(self, save=True):
+    def get_osm_data(self, save=False):
         """
             Obtiene OSM ID y coordenadas de un polígono según el
             lugar que representa.
@@ -64,7 +64,7 @@ class Zone(models.Model):
                 self.osm_id = osmid
                 self.coords = center
                 if (save):
-                    self.save()
+                    self.save(update_fields=['osm_id', 'coords'])
                 return [osmid, center]
         print("No se ha encontrado información")
         return []
@@ -81,12 +81,16 @@ class Zone(models.Model):
             'User-Agent': 'Urban planning by Andes Chile ONG'
         }
         ans = requests.post(url, headers=headers, data=query)
+
+        if ans.status_code != 200:
+            return []
+        
         data = ans.json()
         mapped = [el.get('id') for el in data.get('elements', [])]
 
         self.mapped_ways = mapped
         if (save):
-            self.save()
+            self.save(update_fields=['mapped_ways'])
         else:
             return mapped
 
@@ -97,9 +101,10 @@ class Zone(models.Model):
     @classmethod
     def before_save(cls, sender, instance, *args, **kwargs):
         # Buscar datos de OSM
+        osmid = None
         if (not instance.osm_id or not instance.coords):
             osmid, center = instance.get_osm_data()
-        if (not instance.mapped_ways):
+        if (not instance.mapped_ways and osmid):
             osm_id = instance.osm_id if instance.osm_id else osmid
             instance.get_mapped_ways(osm_id)
 
