@@ -135,6 +135,14 @@ html, body {
   color: white;
 }
 
+.btn:disabled {
+  background-color: #e0e0e0 !important;
+  border-color: #cccccc !important;
+  color: #888888 !important;
+  cursor: not-allowed !important;
+  pointer-events: none;
+}
+
 .navigation {
   margin: 0;
   padding: 0 2%;
@@ -321,6 +329,7 @@ h5 a:hover {
 .clearfix:after {
     clear: both;
 }
+
 /* 
 .clearfix {
     *zoom: 1;
@@ -377,7 +386,6 @@ h5 a:hover {
 }
 
 .card .card-body {
-  font-family: open sans;
   padding: 1rem;
 }
 
@@ -425,6 +433,7 @@ h5 a:hover {
 .mt-7 {
   margin-top: 5rem !important;
 }
+
 .row {
   --bs-gutter-x: 1rem;
   --bs-gutter-y: 0;

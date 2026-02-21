@@ -11,17 +11,17 @@
         {% include 'navbar.html' %}
     </div>
     <div class="map-container">
-        {{ deckgl | safe }}
+            {{ deckgl | safe }}
         <div class="layer-controls">
-            {% for layer in layers %}
+                {% for layer in layers %}
                 <label>
                     <input type="checkbox" id="toggle-{{ layer.id }}"  {{ layer.visible }}> {{ layer.label }}
-                </label>
+                    </label>
                 <br>
-            {% endfor %}
-        </div>
-        <div class="legend">
-            {% for layer in layers %}
+                {% endfor %}
+            </div>
+            <div class="legend">
+                {% for layer in layers %}
                 <div style="display: flex; align-items: center; margin-right: 10px;">
                     <span style="text-align:center">
                         <i
@@ -32,8 +32,8 @@
                         ({{ layer.label }})
                     </span>
                 </div>
-            {% endfor %}
-        </div>
+                {% endfor %}
+            </div>
     </div>
 
 </body>
