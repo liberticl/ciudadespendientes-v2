@@ -36,6 +36,7 @@ YEARS = (
     (2022, 2022),
     (2023, 2023),
     (2024, 2024),
+    (2025, 2025),
 )
 
 REGIONS = (
@@ -45,7 +46,7 @@ REGIONS = (
     ('Atacama', 'Atacama'),
     ('Coquimbo', 'Coquimbo'),
     ('Valparaíso', 'Valparaíso'),
-    ('de Santiago', 'de Santiago'),
+    ('Región Metropolitana', 'Región Metropolitana'),
     ('O Higgins', 'O Higgins'),
     ('Maule', 'Maule'),
     ('Ñuble', 'Ñuble'),
