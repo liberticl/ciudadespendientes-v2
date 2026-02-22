@@ -10,13 +10,13 @@ class ZoneAdmin(admin.ModelAdmin):
         Sitio administrativo para Zone
     """
     list_display = ('name', 'zone_type', 'country', 'osm_id', 'coords')
-    list_filter = ('name', 'zone_type', 'country',)
-    search_fields = ('name', 'zone_type', 'country', 'osm_id')
+    list_filter = ('name', 'zone_type', 'country', 'region')
+    search_fields = ('name', 'zone_type', 'country', 'region', 'osm_id')
     readonly_fields = ('osm_id', 'coords',)
     fieldsets = (
         ('General', {
             'fields': (
-                'name', 'zone_type', 'country',)}),
+                'name', 'zone_type', 'country', 'region', 'available_years')}),
         # ('Pertenencia de la zona', {
         #     'fields': ('sectors',)}),
         ('Datos de OSM', {

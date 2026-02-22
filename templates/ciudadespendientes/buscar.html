@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block content %}
 <!-- Loading Overlay -->
@@ -17,34 +18,42 @@
     <br>
     <form id="buscar-form" method="POST" action="/buscar/">
       {% csrf_token %}
+      {{ comunas|json_script:"zones-data" }}
       <div class="row">
-        <div class="col-lg-3"></div>
-        <div class="col-lg-6 text-start">
+        <div class="col-lg-3 text-start">
           <div class="form-container">
-            <h5><label for="comunas">Comunas:</label></h5>
-            <br>
-            {% for ciudad in comunas %}
-            <div class="form-check" style="margin-bottom: 5px;">
-              <input type="checkbox" id="ciudad{{ forloop.counter }}" name="comunas" value="{{ ciudad }}"
-                class="form-check-input comuna-checkbox" style="cursor: pointer;">
-              <label class="form-check-label" for="ciudad{{ forloop.counter }}" style="cursor: pointer;">{{ ciudad|upper }}</label>
-            </div>
-            {% empty %}
-            <p style="color: red;">No tienes permiso para visualización.</p>
-            {% endfor %}
+            <h5><label for="pais-select">País:</label></h5>
+            <select id="pais-select" class="form-select mb-3">
+              <option value="">Seleccione un país</option>
+            </select>
+
+            <h5><label for="region-select">Región:</label></h5>
+            <select id="region-select" class="form-select mb-3" disabled>
+              <option value="">Seleccione una región</option>
+            </select>
           </div>
         </div>
-        <div class="col-lg-3">
+
+        <div class="col-lg-5 text-start">
           <div class="form-container">
-            <h5><label for="periodo">Años:</label></h5>
-            <br>
-            {% for per in periodo %}
-            <div class="form-check" style="margin-bottom: 5px;">
-              <input type="checkbox" id="per{{ forloop.counter }}" name="periodo" value="{{ per }}"
-                class="form-check-input periodo-checkbox" style="cursor: pointer;">
-              <label class="form-check-label" for="per{{ forloop.counter }}" style="cursor: pointer;">{{ per }}</label>
+            <h5><label>Comunas o zonas:</label></h5>
+            <div id="comunas-container"
+              style="max-height: 250px; overflow-y: auto; opacity: 0.5; pointer-events: none; border: 1px solid #ddd; padding: 10px; border-radius: 5px;">
+              <p class="text-muted small m-0">Seleccione una región primero.</p>
             </div>
-            {% endfor %}
+            {% if not comunas %}
+            <p style="color: red; margin-top: 10px;">No tienes permiso para visualización.</p>
+            {% endif %}
+          </div>
+        </div>
+
+        <div class="col-lg-4 text-start">
+          <div class="form-container">
+            <h5><label>Años disponibles:</label></h5>
+            <div id="años-container"
+              style="max-height: 250px; overflow-y: auto; opacity: 0.5; pointer-events: none; border: 1px solid #ddd; padding: 10px; border-radius: 5px;">
+              <p class="text-muted small m-0">Seleccione comunas primero.</p>
+            </div>
           </div>
         </div>
       </div>
@@ -56,31 +65,5 @@
   </div>
 </div>
 
-<script>
-  document.addEventListener('DOMContentLoaded', function () {
-    const form = document.getElementById('buscar-form');
-    const submitBtn = document.getElementById('submit-btn');
-    const comunaCheckboxes = document.querySelectorAll('.comuna-checkbox');
-    const periodoCheckboxes = document.querySelectorAll('.periodo-checkbox');
-    const loadingOverlay = document.getElementById('loading-overlay');
-
-    function validateForm() {
-      const hasComuna = Array.from(comunaCheckboxes).some(cb => cb.checked);
-      const hasPeriodo = Array.from(periodoCheckboxes).some(cb => cb.checked);
-      submitBtn.disabled = !(hasComuna && hasPeriodo);
-    }
-
-    comunaCheckboxes.forEach(cb => cb.addEventListener('change', validateForm));
-    periodoCheckboxes.forEach(cb => cb.addEventListener('change', validateForm));
-
-    form.addEventListener('submit', function () {
-      if (!submitBtn.disabled) {
-        loadingOverlay.style.display = 'flex';
-      }
-    });
-
-    // Initial validation in case browser preserves checked inputs on refresh
-    validateForm();
-  });
-</script>
+<script src="{% static 'ciudadespendientes/js/buscar.js' %}"></script>
 {% endblock %}

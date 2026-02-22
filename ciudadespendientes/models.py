@@ -36,6 +36,12 @@ class Zone(models.Model):
     mapped_ways = models.JSONField(
         "Vías mapeadas", default=list, blank=True,
         help_text="Vías que están mapeadas en la zona.")
+    available_years = models.JSONField(
+        "Años disponibles", default=list, blank=True,
+        help_text="Años disponibles para esta zona (ej. [2019, 2025]).")
+    region = models.CharField(
+        "Región/Provincia", max_length=50, choices=choices.REGIONS, blank=True,
+        help_text='Región (Chile) o Provincia (Argentina) a la que pertenece esta zona.')
 
     def __str__(self):
         return f"{self.name} - {self.zone_type}"

@@ -19,13 +19,7 @@ def user_has_zone_permission(view_func):
         if request.user.is_superuser:
             return view_func(request, *args, **kwargs)
 
-        user_zones = request.user.zones.prefetch_related(
-            Prefetch('sector__name', queryset=StravaData.objects.all())
-        ).all()
-        user_sectors = StravaData.objects.filter(
-            sector__in=user_zones).distinct()
-        sectors = user_sectors.values_list('sector__name', flat=True).distinct() # noqa
-
+        sectors = request.user.get_user_zones()
         if not sectors:
             raise PermissionDenied(
                 "No tienes zonas de visualización asignadas.")

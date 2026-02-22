@@ -133,17 +133,29 @@ class Account(PermissionsMixin, AbstractBaseUser):
         return user_name[0] + str(datetime.now().year)
 
     def get_user_zones(self):
-        if (self.is_superuser):
-            return StravaData.objects.filter(
-                on_mongo=True).values_list('sector__name', flat=True).distinct()  # noqa
-        user_zones = self.zones.prefetch_related(
-            Prefetch('sector',
-                     queryset=StravaData.objects.filter(on_mongo=True))
+        if self.is_superuser:
+            qs = StravaData.objects.filter(on_mongo=True).select_related('sector')
+        else:
+            user_zones = self.zones.prefetch_related(
+                Prefetch('sector', queryset=StravaData.objects.filter(on_mongo=True))
             ).all()
-        user_sectors = StravaData.objects.filter(
-            sector__in=user_zones).distinct()
-        sectors = user_sectors.values_list('sector__name', flat=True).distinct() # noqa
-        return sectors if sectors else []
+            qs = StravaData.objects.filter(on_mongo=True, sector__in=user_zones).select_related('sector')
+            
+        sectors_info = []
+        seen = set()
+        for strava in qs:
+            sec = strava.sector
+            if sec.id not in seen:
+                sectors_info.append({
+                    'id': sec.id,
+                    'name': sec.name,
+                    'type': sec.zone_type,
+                    'country': sec.country,
+                    'region_name': sec.region if hasattr(sec, 'region') and sec.region else None,
+                    'available_years': sec.available_years if hasattr(sec, 'available_years') else []
+                })
+                seen.add(sec.id)
+        return sectors_info
 
     def get_user_permissions(self):
         if (self.is_superuser):

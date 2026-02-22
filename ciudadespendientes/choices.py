@@ -3,7 +3,6 @@
 
 ZONE_TYPES = (
     ('País', 'País'),
-    ('Región', 'Región'),
     ('Comuna', 'Comuna'),
     ('Zona Regional', 'Zona Regional'),
     ('Particular', 'Particular')
@@ -37,4 +36,28 @@ YEARS = (
     (2022, 2022),
     (2023, 2023),
     (2024, 2024),
+)
+
+REGIONS = (
+    ('Arica y Parinacota', 'Arica y Parinacota'),
+    ('Tarapacá', 'Tarapacá'),
+    ('Antofagasta', 'Antofagasta'),
+    ('Atacama', 'Atacama'),
+    ('Coquimbo', 'Coquimbo'),
+    ('Valparaíso', 'Valparaíso'),
+    ('de Santiago', 'de Santiago'),
+    ('O Higgins', 'O Higgins'),
+    ('Maule', 'Maule'),
+    ('Ñuble', 'Ñuble'),
+    ('Biobío', 'Biobío'),
+    ('La Araucanía', 'La Araucanía'),
+    ('Los Ríos', 'Los Ríos'),
+    ('Los Lagos', 'Los Lagos'),
+    ('Aysén', 'Aysén'),
+    ('Magallanes', 'Magallanes'),
+    ('Ahuachapán', 'Ahuachapán'),
+    ('Cabañas', 'Cabañas'),
+    ('Cordillera', 'Cordillera'),
+    ('Tucumán', 'Tucumán'),
+    ('Santa Fe', 'Santa Fe'),
 )

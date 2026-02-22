@@ -49,10 +49,11 @@ def find(request):
 @user_has_permission(permissions=['view_strava_data'])
 def show_data(request):
     user_sectors = request.user.get_user_zones()
+    user_sector_names = [s['name'] for s in user_sectors]
 
     try:
         years = [int(year) for year in request.GET["periodo"].split(',')]
-        cities = [city for city in request.GET["comunas"].split(',') if city in user_sectors] # noqa
+        cities = [city for city in request.GET["comunas"].split(',') if city in user_sector_names] # noqa
     except Exception:
         return redirect('error_404')
 
