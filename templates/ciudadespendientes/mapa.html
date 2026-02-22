@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+{% load static %}
 <html lang="es-CL">
 
 <head>
@@ -11,31 +12,32 @@
         {% include 'navbar.html' %}
     </div>
     <div class="map-container">
-            {{ deckgl | safe }}
+        {{ deckgl | safe }}
         <div class="layer-controls">
-                {% for layer in layers %}
-                <label>
-                    <input type="checkbox" id="toggle-{{ layer.id }}"  {{ layer.visible }}> {{ layer.label }}
-                    </label>
-                <br>
-                {% endfor %}
+            {% for layer in layers %}
+            <label>
+                <input type="checkbox" id="toggle-{{ layer.id }}" {{ layer.visible }}> {{ layer.label }}
+            </label>
+            <br>
+            {% endfor %}
+        </div>
+        <div class="legend">
+            {% for layer in layers %}
+            <div style="display: flex; align-items: center; margin-right: 10px;">
+                <span style="text-align:center">
+                    <i
+                        style="display: inline-block; width: 50px; height: 5px; background: {{ layer.id }}; margin-right: 5px;"></i>
+                    <br>
+                    {{ layer.stats }}
+                    <br>
+                    ({{ layer.label }})
+                </span>
             </div>
-            <div class="legend">
-                {% for layer in layers %}
-                <div style="display: flex; align-items: center; margin-right: 10px;">
-                    <span style="text-align:center">
-                        <i
-                            style="display: inline-block; width: 50px; height: 5px; background: {{ layer.id }}; margin-right: 5px;"></i>
-                        <br>
-                        {{ layer.stats }}
-                        <br>
-                        ({{ layer.label }})
-                    </span>
-                </div>
-                {% endfor %}
-            </div>
+            {% endfor %}
+        </div>
     </div>
 
+    <script src="{% static 'ciudadespendientes/js/mapa.js' %}"></script>
 </body>
 
 </html>

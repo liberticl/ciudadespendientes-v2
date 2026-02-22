@@ -1,5 +1,6 @@
 /* Main page with stikky-footer */
-html, body {
+html,
+body {
   height: 100%;
   background-color: #ffffff00;
   font-family: 'Urbanist', sans-serif;
@@ -51,13 +52,13 @@ html, body {
 @media screen and (min-width: 601px) {
   #about {
     font-size: 1rem;
-  } 
+  }
 }
 
 @media screen and (max-width: 600px) {
   #about {
     font-size: 1.2rem;
-  } 
+  }
 }
 
 .navbar .navbar-brand,
@@ -125,8 +126,8 @@ html, body {
 }
 
 .btn {
-  background-color: white; 
-  color: black; 
+  background-color: white;
+  color: black;
   border: 2px solid #2241a8;
 }
 
@@ -311,23 +312,23 @@ h5 a:hover {
 *,
 *:after,
 *:before {
-	-webkit-box-sizing: border-box;
-	-moz-box-sizing: border-box;
-	box-sizing: border-box;
-	padding: 0;
-	margin: 0;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
 }
 
 
 /* Clearfix hack by Nicolas Gallagher: http://nicolasgallagher.com/micro-clearfix-hack/ */
 .clearfix:before,
 .clearfix:after {
-    content: " ";
-    display: table;
+  content: " ";
+  display: table;
 }
 
 .clearfix:after {
-    clear: both;
+  clear: both;
 }
 
 /* 
@@ -345,13 +346,13 @@ h5 a:hover {
   word-wrap: break-word;
   background-color: #fff;
   background-clip: border-box;
-  border: 0 solid rgba(0,0,0,.125);
+  border: 0 solid rgba(0, 0, 0, .125);
   border-radius: 1rem;
   width: 100%;
 }
 
 .card {
-  box-shadow: 0 20px 27px 0 rgba(0,0,0,.05);
+  box-shadow: 0 20px 27px 0 rgba(0, 0, 0, .05);
   flex: 1;
   overflow: hidden;
   transition: .5s;
@@ -371,14 +372,14 @@ h5 a:hover {
 }
 
 .card-new {
-  box-shadow: 0 20px 27px 0 rgba(0,0,0,.05);
+  box-shadow: 0 20px 27px 0 rgba(0, 0, 0, .05);
   flex: 1;
   overflow: hidden;
   transition: .3s;
   margin: 0;
   height: 100%;
-	animation: pulse 3s infinite;
-	transform-origin: center;
+  animation: pulse 3s infinite;
+  transform-origin: center;
 }
 
 .card-header:first-child {
@@ -485,9 +486,9 @@ h5 a:hover {
   bottom: 25px;
   right: 10px;
   background-color: rgba(255, 255, 255, 0.7);
-  z-index:99;
-  font-size:14px;
-  border:2px solid rgba(255, 255, 255, 0.349);
+  z-index: 99;
+  font-size: 14px;
+  border: 2px solid rgba(255, 255, 255, 0.349);
   padding: 10px;
   display: flex;
   align-items: center;
@@ -548,4 +549,20 @@ h5 a:hover {
   border-radius: 1rem;
   background-color: rgba(255, 255, 255, 0.8);
   z-index: 1000;
+}
+
+/* Custom Tooltip styling for Deck.GL */
+.deck-tooltip {
+  font-family: 'Urbanist', sans-serif !important;
+  font-size: 14px !important;
+  color: black !important;
+  background-color: rgba(255, 255, 255, 0.7) !important;
+  /* using the app's #2241a8 color scheme */
+  padding: 12px 16px !important;
+  border-radius: 8px !important;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4) !important;
+  pointer-events: none;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  z-index: 1500 !important;
+  backdrop-filter: blur(4px) !important;
 }
