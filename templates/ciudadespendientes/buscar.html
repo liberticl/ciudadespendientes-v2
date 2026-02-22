@@ -27,15 +27,6 @@
               <option value="">Seleccione un país</option>
             </select>
 
-            <h5><label for="region-select">Región:</label></h5>
-            <select id="region-select" class="form-select mb-3" disabled>
-              <option value="">Seleccione una región</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="col-lg-5 text-start">
-          <div class="form-container">
             <h5><label>Comunas o zonas:</label></h5>
             <div id="comunas-container"
               style="max-height: 250px; overflow-y: auto; opacity: 0.5; pointer-events: none; border: 1px solid #ddd; padding: 10px; border-radius: 5px;">
@@ -44,6 +35,17 @@
             {% if not comunas %}
             <p style="color: red; margin-top: 10px;">No tienes permiso para visualización.</p>
             {% endif %}
+            
+          </div>
+        </div>
+
+        <div class="col-lg-5 text-start">
+          <div class="form-container">
+            <h5><label for="region-select">Región:</label></h5>
+            <select id="region-select" class="form-select mb-3" disabled>
+              <option value="">Seleccione una región</option>
+            </select>
+            
           </div>
         </div>
 

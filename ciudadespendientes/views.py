@@ -1,3 +1,5 @@
+import numpy as np
+import pandas as pd
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.urls import reverse
@@ -64,9 +66,7 @@ def show_data(request):
         sector__name__in=cities, year__in=years)
     all_bounds = []
     all_references = []
-    # all_ids = []
     for s in sectors:
-        # all_ids.extend(s.sector.mapped_ways)
         polygon = s.get_polygon(save=False)
         if (polygon['success']):
             city_data = get_city_data(polygon['polygon'])
@@ -74,7 +74,7 @@ def show_data(request):
             all_references.append(s.get_sector_coords())
 
     center = get_middle_point(all_references)
-    m, s = color_ride_map(all_bounds, center, years,  # all_ids,
+    m, s = color_ride_map(all_bounds, center, years,
                           collection, anual=False)
 
     html_map = m.to_html(as_string=True)
@@ -151,27 +151,37 @@ def color_ride_map(city_bounds, center, years, collection,
     mongodata = get_ride_from_mongo(city_bounds, years, collection)
     ride_data, trip_count = process_ride_data(mongodata)
 
+    if not ride_data:
+        mapa = pdk.Deck(layers=[], initial_view_state=view_state)
+        return mapa, (0, 0)
+
     stats = get_statistics(trip_count, years)
+    mean, std = stats
 
-    # Clasificar y agregar datos a las capas
-    for coords, trips in ride_data:
-        classification = classify(
-            trips, years, method='general', factor=factor,
-            statistics=stats, anual=anual
-        )
+    df = pd.DataFrame(ride_data, columns=['coordinates', 'trips'])
+    
+    # Optimize classification vectorially
+    num_years = len(years) if anual else 1
+    trips_base = df['trips'] / factor
+    by_year = trips_base / num_years
+    
+    if anual and isinstance(years, list):
+        df['trips'] = np.round(by_year).astype(int)
+    else:
+        df['trips'] = np.round(trips_base).astype(int)
 
-        if anual and isinstance(years, list):
-            trips = round(trips / len(years) / factor)
-        else:
-            trips = round(trips / factor)
+    # Classifications
+    conditions = [
+        by_year > (mean + std),
+        by_year > mean
+    ]
+    choices = ['red', 'orange']
+    df['classification'] = np.select(conditions, choices, default='green')
 
-        data = {
-            "coordinates": coords,  # [[c[1],c[0]] for c in coords],
-            "trips": trips,
-        }
-
-        # Agregar los datos a la capa correspondiente
-        layers[classification[0]].data.append(data)
+    # Assign subset DataFrames strictly directly to matching layers
+    for color in ['green', 'orange', 'red']:
+        subset = df[df['classification'] == color]
+        layers[color].data = subset[['coordinates', 'trips']]
 
     mapa = pdk.Deck(
         layers=list(layers.values()),
