@@ -1,36 +1,16 @@
-version: '3'
+version: '3.8'
 
 services:
-  django:
+  web:
     build:
       context: .
-      dockerfile: Dockerfile  # El Dockerfile para Django
-    volumes:
-      - .:/app
-    expose:
-      - 8000
-    env_file:
-      - .env  # Si tienes variables de entorno, como DATABASE_URL, etc.
-    networks:
-      - app-network
-
-  nginx:
-    build:
-      context: .
-      dockerfile: Nginx  # El Dockerfile para Nginx
-    volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf
-      - static_volume:/app/staticfiles
+      dockerfile: Dockerfile
     ports:
-      - "80:80"  # Mapea el puerto 80 del contenedor a tu máquina local
-    depends_on:
-      - django
+      - "80:80"
+    env_file:
+      - .env
     networks:
       - app-network
-
-volumes:
-  static_volume:
-    driver: local
 
 networks:
   app-network:
