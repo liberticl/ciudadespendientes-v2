@@ -136,7 +136,8 @@ def prepare_map(center):
         latitude=center[0],
         longitude=center[1],
         zoom=13,
-        pitch=0,
+        pitch=20,
+        bearing=0,
     )
 
     layers = {}
