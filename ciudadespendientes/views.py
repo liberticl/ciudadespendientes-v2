@@ -83,6 +83,7 @@ def show_data(request):
     return render(request, 'ciudadespendientes/mapa.html', {
                   'headers': headers,
                   'deckgl': deckgl,
+                  'query_string': request.GET.urlencode(),
                   'layers': [
                       {
                           'id': 'green',

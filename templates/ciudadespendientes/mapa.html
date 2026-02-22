@@ -13,6 +13,9 @@
     </div>
     <div class="map-container">
         {{ deckgl | safe }}
+        <div class="btn btn-back" onclick="window.location.href='/buscar/?{{ query_string }}'">
+            Modificar búsqueda
+        </div>
         <div class="layer-controls">
             {% for layer in layers %}
             <label>

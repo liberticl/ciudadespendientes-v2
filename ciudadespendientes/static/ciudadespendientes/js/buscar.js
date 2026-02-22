@@ -178,4 +178,51 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
+    // Check for query params to pre-load state when returning from mapa.html
+    const urlParams = new URLSearchParams(window.location.search);
+    const preComunasStr = urlParams.get('comunas');
+    const prePeriodoStr = urlParams.get('periodo');
+
+    if (preComunasStr && prePeriodoStr) {
+        const preComunas = preComunasStr.split(',');
+        const prePeriodos = prePeriodoStr.split(',');
+
+        if (preComunas.length > 0) {
+            // Find first comuna to infer Country and Region
+            const targetComuna = zonesData.find(z => z.name === preComunas[0]);
+            if (targetComuna && targetComuna.country && targetComuna.region_name) {
+
+                // 1. Select Country and trigger change to build region dropdown
+                paisSelect.value = targetComuna.country;
+                paisSelect.dispatchEvent(new Event('change'));
+
+                // 2. Select Region and trigger change to build comuna checkboxes
+                regionSelect.value = targetComuna.region_name;
+                regionSelect.dispatchEvent(new Event('change'));
+
+                // 3. Mark selected Comunas as checked
+                const comunaCheckboxes = document.querySelectorAll('.comuna-checkbox');
+                comunaCheckboxes.forEach(cb => {
+                    if (preComunas.includes(cb.value)) {
+                        cb.checked = true;
+                    }
+                });
+
+                // 4. Force update on Years/Period checkboxes using the checked Comunas
+                updateYears();
+
+                // 5. Mark selected Periodos as checked
+                const periodoCheckboxes = document.querySelectorAll('.periodo-checkbox');
+                periodoCheckboxes.forEach(cb => {
+                    // values in query string are strings, checkbox values are strings too
+                    if (prePeriodos.includes(cb.value)) {
+                        cb.checked = true;
+                    }
+                });
+
+                validateForm();
+            }
+        }
+    }
+
 });

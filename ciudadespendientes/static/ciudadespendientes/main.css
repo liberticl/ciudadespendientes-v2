@@ -131,6 +131,20 @@ body {
   border: 2px solid #2241a8;
 }
 
+.btn-back {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background-color: rgba(255, 255, 255, 0.7);
+  z-index: 99;
+  font-size: 14px;
+  border: 2px solid rgba(255, 255, 255, 0.349);
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  border-radius: 1rem;
+}
+
 .btn:hover {
   background-color: #2241a8;
   color: white;
