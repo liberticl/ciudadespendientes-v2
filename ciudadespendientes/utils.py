@@ -33,9 +33,8 @@ def create_features(geodata, max=10):
 # Get data from Strava's ZIP file.
 # - SHP file for geometry objects
 # - CSV file for getting Strava info
-def strava_to_mongo(stravazipfile, collection):
-    print(f'Extrayendo los datos de {stravazipfile}')
-    path = os.getcwd() + os.sep + DATA_DIR + os.sep + stravazipfile
+def strava_to_mongo(path, collection):
+    print(f'Extrayendo los datos de {path}')
 
     with ZipFile(path, 'r') as zip:
         files = zip.infolist()
@@ -132,13 +131,13 @@ def get_user_ip(ip):
     }
 
 
-def upload_data():
+def upload_data(zip_path='data.zip'):
     client = MongoClient(MONGO_DB)
     db = client[MONGO_CP_DB]
     collection = db[CP_STRAVA_COLLECTION]
 
     print('Importando datos a MongoDB...')
-    strava_to_mongo('data.zip', collection)
+    strava_to_mongo(zip_path, collection)
 
     print('Creando puntos medios...')
     create_middle_points(collection)
