@@ -40,6 +40,7 @@ YEARS = (
 )
 
 REGIONS = (
+    # Chile
     ('Arica y Parinacota', 'Arica y Parinacota'),
     ('Tarapacá', 'Tarapacá'),
     ('Antofagasta', 'Antofagasta'),
@@ -56,9 +57,8 @@ REGIONS = (
     ('Los Lagos', 'Los Lagos'),
     ('Aysén', 'Aysén'),
     ('Magallanes', 'Magallanes'),
-    ('Ahuachapán', 'Ahuachapán'),
-    ('Cabañas', 'Cabañas'),
-    ('Cordillera', 'Cordillera'),
+    # Argentina
+    ('Buenos Aires', 'Buenos Aires'),
     ('Tucumán', 'Tucumán'),
     ('Santa Fe', 'Santa Fe'),
 )

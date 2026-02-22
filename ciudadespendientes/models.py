@@ -112,7 +112,7 @@ class Zone(models.Model):
             osmid, center = instance.get_osm_data()
         if (not instance.mapped_ways and osmid):
             osm_id = instance.osm_id if instance.osm_id else osmid
-            instance.get_mapped_ways(osm_id)
+            instance.get_mapped_ways(osm_id, save=False)
 
 
 pre_save.connect(Zone.before_save, sender=Zone)

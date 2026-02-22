@@ -9,7 +9,7 @@ class ZoneAdmin(admin.ModelAdmin):
     """
         Sitio administrativo para Zone
     """
-    list_display = ('name', 'zone_type', 'country', 'osm_id', 'coords')
+    list_display = ('name', 'zone_type', 'country', 'region', 'osm_id', 'coords')
     list_filter = ('name', 'zone_type', 'country', 'region')
     search_fields = ('name', 'zone_type', 'country', 'region', 'osm_id')
     readonly_fields = ('osm_id', 'coords',)
