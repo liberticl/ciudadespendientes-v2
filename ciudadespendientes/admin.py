@@ -141,14 +141,33 @@ class StravaDataAdmin(admin.ModelAdmin):
                     fs = FileSystemStorage()
                     filename = fs.save(zip_file.name, zip_file)
                     file_path = fs.path(filename)
-                    try:
-                        upload_data(file_path)
-                        messages.success(request, 'Datos importados a MongoDB correctamente.')
-                    except Exception as e:
-                        messages.error(request, f'Ocurrió un error al subir: {e}')
-                    finally:
-                        fs.delete(filename)
-                return redirect("..")
+                    def generate_stream():
+                        # Base UI template directly streamed to avoid buffering 
+                        yield '<!DOCTYPE html><html><head><meta charset="utf-8"><title>Procesando...</title>'
+                        yield '<style>body{font-family:monospace;background:#2b2b2b;color:#a9b7c6;padding:30px;line-height:1.6} .msg{margin-bottom:8px} .success{color:#629755;font-weight:bold;margin-top:20px;} .error{color:#cc666e} a{color:#9876aa;text-decoration:none;border:1px solid #9876aa;padding:5px 15px;border-radius:5px;display:inline-block;margin-top:20px;} a:hover{background:#9876aa;color:#2b2b2b}</style>'
+                        yield '</head><body>'
+                        yield '<h2>Procesando carga de archivo ZIP</h2>'
+                        yield '<div id="log"></div>'
+                        yield '<script>function log(m, c) { var d=document.createElement("div"); d.className=c||"msg"; d.innerHTML=m; document.getElementById("log").appendChild(d); window.scrollTo(0, document.body.scrollHeight); }</script>'
+                        # Spacing pad forces browser buffers to flush early
+                        yield '<!-- ' + (' ' * 1024) + ' -->'
+
+                        try:
+                            for msg in upload_data(file_path):
+                                yield f"<script>log('{msg}');</script>\n"
+                                yield '<!-- ' + (' ' * 1024) + ' -->'
+
+                            yield "<script>log('¡Datos importados a MongoDB completamente!', 'success');</script>"
+                            yield "<script>log('<a href=\"..\">Volver al panel</a>');</script>"
+                        except Exception as e:
+                            yield f"<script>log('Ocurrió un crítico error al extraer la data: {e}', 'error');</script>"
+                            yield "<script>log('<a href=\"..\">Volver al panel</a>');</script>"
+                        finally:
+                            fs.delete(filename)
+                        yield '</body></html>'
+
+                    from django.http import StreamingHttpResponse
+                    return StreamingHttpResponse(generate_stream())
             else:
                 messages.error(request, "Ningún archivo seleccionado.")
                 

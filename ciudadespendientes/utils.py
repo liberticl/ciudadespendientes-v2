@@ -34,7 +34,7 @@ def create_features(geodata, max=10):
 # - SHP file for geometry objects
 # - CSV file for getting Strava info
 def strava_to_mongo(path, collection):
-    print(f'Extrayendo los datos de {path}')
+    yield f'Extrayendo los datos de {path.split("/")[-1]}...'
 
     with ZipFile(path, 'r') as zip:
         files = zip.infolist()
@@ -45,21 +45,24 @@ def strava_to_mongo(path, collection):
         with zip.open(csvfile) as csv:
             data = pd.read_csv(csv, low_memory=False)
 
-    print('Generando elementos para subir a mongodb')
+    yield 'Generando elementos para subir a mongodb...'
     merged_df = pd.merge(geodata, data,
                          how='inner', left_on='edgeUID', right_on='edge_uid')
 
     features = create_features(merged_df)
-    print(f'Insertando {len(features)} elementos en mongodb')
+    yield f'Insertando {len(features)} elementos en mongodb...'
     collection.insert_many(features, ordered=False)
+    yield 'Inserción base completada.'
 
 
 # Get middle point for all lines
 def create_middle_points(collection):
+    yield 'Ejecutando pipeline de agregación para puntos medios...'
     pipeline = middle_points_aggregate
     cursor = collection.aggregate(pipeline)
     data = list(cursor)
 
+    yield f'Calculando y preparando actualización para {len(data)} trayectos...'
     update_operation = [
         {
             'filter': {'_id': result['_id']},
@@ -69,6 +72,7 @@ def create_middle_points(collection):
     ]
 
     collection.bulk_write([UpdateOne(**op) for op in update_operation])
+    yield 'Puntos medios guardados en masa de forma exitosa.'
 
 
 # Get middle point of city reference
@@ -132,16 +136,18 @@ def get_user_ip(ip):
 
 
 def upload_data(zip_path='data.zip'):
+    yield "Estableciendo conexión con MongoDB..."
     client = MongoClient(MONGO_DB)
     db = client[MONGO_CP_DB]
     collection = db[CP_STRAVA_COLLECTION]
 
-    print('Importando datos a MongoDB...')
-    strava_to_mongo(zip_path, collection)
+    for msg in strava_to_mongo(zip_path, collection):
+        yield msg
 
-    print('Creando puntos medios...')
-    create_middle_points(collection)
-    print('Finalizado!')
+    for msg in create_middle_points(collection):
+        yield msg
+
+    yield "¡Finalizado!"
     client.close()
 
 
