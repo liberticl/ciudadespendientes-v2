@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.conf import settings
-from .classifier import get_statistics, classify
+from .classifier import get_statistics
 from .utils import (get_middle_point, get_city_data, get_html,
                     get_ride_from_mongo, process_ride_data)
 import pydeck as pdk
@@ -15,7 +15,7 @@ from .decorators import user_has_zone_permission, user_has_permission
 collection = settings.STRAVA_COLLECTION
 LAYER_COLORS = settings.LAYERS
 GREEN = settings.GREEN
-ALLOWED_YEARS = [2019, 2020, 2021, 2022, 2023, 2024]
+ALLOWED_YEARS = [2019, 2020, 2021, 2022, 2023, 2024, 2025]
 
 
 @login_required
