@@ -38,12 +38,15 @@ points_inside = [
             }
         }
     },
-    {
-        '$project': '<projection>'
-    },
     {'$group': {
-        '_id': '$geometry',
+        '_id': '$geometry.coordinates',
         'total_trip_count': {'$sum': '$total_trip_count'}
+        }
+    },
+    {'$project': {
+        '_id': 0,
+        'coordinates': '$_id',
+        'trips': '$total_trip_count'
         }
     }
 ]

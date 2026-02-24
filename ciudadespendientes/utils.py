@@ -1,5 +1,6 @@
 import os
 import re
+import copy
 import requests
 import pandas as pd
 import geopandas as gpd
@@ -85,7 +86,6 @@ def get_middle_point(references):
     return tuple([element / len(references) for element in references_sum])
 
 
-# @calculate_execution_time
 def get_ride_from_mongo(city_bounds, years, collection, osm_ids=[]):
     full_coords = []
     for bounds in city_bounds:
@@ -93,30 +93,21 @@ def get_ride_from_mongo(city_bounds, years, collection, osm_ids=[]):
         coords = [[round(x, 6), round(y, 6)] for x, y in coords]
         coords = [coords + [coords[0]]]
         full_coords.append(coords)
-    del coords
 
-    projection = ['total_trip_count', 'geometry']
-    pipeline = points_inside
-    inside = pipeline[0]['$match']
-    inside['middlePoint']['$geoWithin']['$geometry']['coordinates'] = full_coords  # noqa
-    # pipeline = points_inside_2
-    # inside = pipeline[0]['$match']
-    # inside['osmId']['$in'] = osm_ids
-    inside['year']['$in'] = years
-    pipeline[1]['$project'] = {'_id': 0, **dict.fromkeys(projection, 1)}
+    pipeline = copy.deepcopy(points_inside)
+    match_stage = pipeline[0]['$match']
+    match_stage['year']['$in'] = years
+    match_stage['middlePoint']['$geoWithin']['$geometry']['coordinates'] = full_coords
 
     return collection.aggregate(pipeline)
 
 
 def process_ride_data(mongodata):
-    ride_data = []
-    trip_count = []
-    for item in mongodata:
-        coords = item['_id']['coordinates']
-        total_trip_count = item['total_trip_count']
-        ride_data.append((coords, total_trip_count))
-        trip_count.append(total_trip_count)
-    return (ride_data, trip_count)
+    df = pd.DataFrame(list(mongodata))
+    if df.empty:
+        return df, []
+    
+    return df, df['trips'].tolist()
 
 
 def get_user_ip(ip):

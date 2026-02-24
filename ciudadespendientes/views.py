@@ -11,7 +11,6 @@ import pydeck as pdk
 from .models import StravaData
 from .decorators import user_has_zone_permission, user_has_permission
 
-
 collection = settings.STRAVA_COLLECTION
 LAYER_COLORS = settings.LAYERS
 GREEN = settings.GREEN
@@ -63,15 +62,25 @@ def show_data(request):
         return redirect('error_403')
 
     sectors = StravaData.objects.filter(
-        sector__name__in=cities, year__in=years)
+        sector__name__in=cities, year__in=years).select_related('sector')
+
+    unique_polygons = {}
     all_bounds = []
     all_references = []
     for s in sectors:
-        polygon = s.get_polygon(save=False)
-        if (polygon['success']):
-            city_data = get_city_data(polygon['polygon'])
-            all_bounds.append(city_data)
-            all_references.append(s.get_sector_coords())
+        sector_id = s.sector_id
+        if sector_id not in unique_polygons:
+            polygon = s.get_polygon(save=False)
+            if (polygon['success']):
+                unique_polygons[sector_id] = get_city_data(polygon['polygon'])
+            else:
+                unique_polygons[sector_id] = None
+        
+        if unique_polygons[sector_id]:
+            if unique_polygons[sector_id] not in all_bounds:
+                all_bounds.append(unique_polygons[sector_id])
+            
+        all_references.append(s.get_sector_coords())
 
     center = get_middle_point(all_references)
     m, s = color_ride_map(all_bounds, center, years,
@@ -147,48 +156,38 @@ def prepare_map(center):
     return (view_state, layers)
 
 
-def color_ride_map(city_bounds, center, years, collection,
-                   factor=1, anual=False):
+def color_ride_map(city_bounds, center, years, collection, factor=1, anual=False):
     view_state, layers = prepare_map(center)
     mongodata = get_ride_from_mongo(city_bounds, years, collection)
-    ride_data, trip_count = process_ride_data(mongodata)
+    df, trip_count = process_ride_data(mongodata)
 
-    if not ride_data:
+    if df.empty:
         mapa = pdk.Deck(layers=[], initial_view_state=view_state)
         return mapa, (0, 0)
 
     stats = get_statistics(trip_count, years)
     mean, std = stats
-
-    df = pd.DataFrame(ride_data, columns=['coordinates', 'trips'])
     
-    # Optimize classification vectorially
+    # Cálculo vectorial de clasificaciones
     num_years = len(years) if anual else 1
-    trips_base = df['trips'] / factor
-    by_year = trips_base / num_years
+    trips_per_year = (df['trips'] / factor) / num_years
     
-    if anual and isinstance(years, list):
-        df['trips'] = np.round(by_year).astype(int)
-    else:
-        df['trips'] = np.round(trips_base).astype(int)
-
-    # Classifications
+    # Creamos una columna de clasificación usando np.select (mucho más rápido que un apply)
     conditions = [
-        by_year > (mean + std),
-        by_year > mean
+        (trips_per_year > mean + std),
+        (trips_per_year > mean)
     ]
     choices = ['red', 'orange']
-    df['classification'] = np.select(conditions, choices, default='green')
+    df['color_group'] = np.select(conditions, choices, default='green')
 
-    # Assign subset DataFrames strictly directly to matching layers
-    for color in ['green', 'orange', 'red']:
-        subset = df[df['classification'] == color]
-        layers[color].data = subset[['coordinates', 'trips']]
+    # Asignación masiva a las capas
+    for color, layer in layers.items():
+        layer.data = df[df['color_group'] == color]
 
     mapa = pdk.Deck(
         layers=list(layers.values()),
         initial_view_state=view_state,
-        map_style="https://basemaps.cartocdn.com/gl/positron-gl-style/style.json",  # noqa
+        map_style="https://basemaps.cartocdn.com/gl/positron-gl-style/style.json",
         tooltip={"text": "Viajes totales: {trips}"},
     )
 
