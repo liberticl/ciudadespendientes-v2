@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'ciudadespendientes',
     'accounts',
     'measuring',
+    'hugo_edit',
 ]
 
 MIDDLEWARE = [

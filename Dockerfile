@@ -22,4 +22,4 @@ RUN nginx -t
 
 EXPOSE 80
 
-CMD service nginx start && gunicorn --workers 3 andeschileong.wsgi:application --bind 0.0.0.0:8000 --log-level debug
+CMD python manage.py sync_hugo && service nginx start && gunicorn --workers 3 andeschileong.wsgi:application --bind 0.0.0.0:8000 --log-level debug

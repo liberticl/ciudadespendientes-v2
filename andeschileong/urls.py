@@ -20,6 +20,7 @@ from django.urls import path, include
 from ciudadespendientes import views
 from django.contrib.auth import views as auth_views
 from accounts.views import CustomLoginView
+from hugo_edit.admin import hugo_admin_site
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -32,6 +33,9 @@ urlpatterns = [
     path('', views.welcome, name='welcome'),
     path('404/', views.error_404, name='error_404'),
     path('403/', views.error_403, name='error_403'),
+
+    # Hugo admin e Intranet
+    path('', include('hugo_edit.urls')),
 
     # Measuring
     path('api/', include('measuring.urls')),
