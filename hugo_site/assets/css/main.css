@@ -2,7 +2,7 @@
 html, body {
   height: 100%;
   background-color: #fff;
-  font-family: 'Source Sans Pro', sans-serif;
+  font-family: 'Urbanist', sans-serif;
   /* The html and body elements cannot have any padding or margin. */
   border-top: 3px solid #2241a8;
 }
@@ -340,7 +340,7 @@ h5 a:hover {
 }
 
 .card .card-body {
-  font-family: open sans;
+  font-family: 'Urbanist', sans-serif;
   padding: 1.5rem;
 }
 
