@@ -7,7 +7,6 @@ disqusShortname = ""
 googleAnalytics = ""
 theme = "hugo-sustain"
 buildFuture = true
-publishDir = "../andeschileongcl"
 
 [permalinks]
   post = "/:day de /:month del /:year:/slug"
