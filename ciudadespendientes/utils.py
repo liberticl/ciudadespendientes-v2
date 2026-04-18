@@ -1,4 +1,3 @@
-import os
 import re
 import copy
 import requests
@@ -8,11 +7,11 @@ from .mongodb import middle_points_aggregate, points_inside
 from zipfile import ZipFile
 from bs4 import BeautifulSoup
 from pymongo import MongoClient, UpdateOne
-from shapely.geometry import Polygon
+from shapely.geometry import Polygon, LineString
 # from .decorators import calculate_execution_time
 from andeschileong.settings import (
     MONGO_DB, MONGO_CP_DB, CP_STRAVA_COLLECTION,
-    DATA_DIR, DECKGL_VERSION)
+    DECKGL_VERSION)
 
 
 # Creates the mongodb files to upload
@@ -97,16 +96,27 @@ def get_ride_from_mongo(city_bounds, years, collection, osm_ids=[]):
     pipeline = copy.deepcopy(points_inside)
     match_stage = pipeline[0]['$match']
     match_stage['year']['$in'] = years
-    match_stage['middlePoint']['$geoWithin']['$geometry']['coordinates'] = full_coords
+    match_stage['middlePoint']['$geoIntersects']['$geometry']['coordinates'] = full_coords
 
-    return collection.aggregate(pipeline)
+    return list(collection.aggregate(pipeline))
 
 
 def process_ride_data(mongodata):
     df = pd.DataFrame(list(mongodata))
     if df.empty:
         return df, []
-    
+
+    # Simplificación de geometrías para mejorar rendimiento de renderizado
+    # Tolerancia de 0.00001 (~1 metro) para no perder precisión visual
+    def simplify_coords(coords):
+        if len(coords) < 3:
+            return coords
+        line = LineString(coords)
+        simplified = line.simplify(0.00001, preserve_topology=True)
+        return list(simplified.coords)
+
+    df['coordinates'] = df['coordinates'].apply(simplify_coords)
+
     return df, df['trips'].tolist()
 
 

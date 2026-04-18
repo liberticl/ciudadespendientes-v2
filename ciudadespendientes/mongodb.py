@@ -29,7 +29,7 @@ points_inside = [
     {'$match': {
         'year': {'$in': '<yearsArray>'},
         'middlePoint': {
-            '$geoWithin': {
+            '$geoIntersects': {
                 '$geometry': {
                     'type': 'MultiPolygon',
                     'coordinates': '<city_bounds>'
