@@ -120,19 +120,28 @@ def process_ride_data(mongodata):
     return df, df['trips'].tolist()
 
 
-def get_user_ip(ip):
-    url = f"https://ipinfo.io/{ip}/json"
-    r = requests.get(url)
-    if r.status_code == 200:
-        data = r.json()
-        data.pop('ip', None)
-        data.pop('org', None)
+def get_client_ip(request):
+    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    if x_forwarded_for:
+        ip = x_forwarded_for.split(',')[0]
     else:
-        data = data.get('error', None)
+        ip = request.META.get('REMOTE_ADDR')
+    return ip
+
+def get_location_from_ip(ip):
+    url = f"https://ipinfo.io/{ip}/json"
+    try:
+        r = requests.get(url)
+        data = r.json() if r.status_code == 200 else {}
+        is_success = r.status_code == 200
+    except requests.RequestException:
+        data = {}
+        is_success = False
 
     return {
-        'sucess': r.status_code == 200,
-        'info': data
+        'sucess': is_success,
+        'bogon': data.get('bogon', False),
+        'loc': data.get('loc', '-33.0498108,-71.6213084')
     }
 
 

@@ -3,7 +3,7 @@
 
 <head>
     {% include 'head.html' %}
-    {% if request.path == '/' or request.resolver_match.url_name == 'buscar' or request.resolver_match.url_name == 'login' %}
+    {% if request.resolver_match.url_name in 'buscar,login,welcome' %}
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
     <style>
         #map {
@@ -20,7 +20,7 @@
 </head>
 
 <body>
-    {% if request.path == '/' or request.resolver_match.url_name == 'buscar' or request.resolver_match.url_name == 'login' or request.resolver_match.url_name == 'logout' %}
+    {% if request.resolver_match.url_name in 'buscar,login,logout,welcome' %}
     <div id="map"></div>
     {% endif %}
 
@@ -32,16 +32,15 @@
     {% endblock %}
 
 
-    {% if request.resolver_match.url_name == 'buscar' %}
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    {% if request.resolver_match.url_name == 'buscar' and request.user.is_authenticated %}
     <script>
         const map = L.map('map').setView([{{ organization.coords }}], 14);
         L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', {
             attribution: '© OpenStreetMap, © CartoDB'
         }).addTo(map);
     </script>
-    {% elif request.resolver_match.url_name == 'login' or request.resolver_match.url_name == 'logout' %}
-    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    {% else %}
     <script>
         const map = L.map('map').setView([{{ loc }}], 14);
         L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', {

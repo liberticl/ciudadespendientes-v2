@@ -5,7 +5,8 @@ from django.urls import reverse
 from django.conf import settings
 from .classifier import get_statistics
 from .utils import (get_middle_point, get_city_data, get_html,
-                    get_ride_from_mongo, process_ride_data)
+                    get_ride_from_mongo, process_ride_data,
+                    get_client_ip, get_location_from_ip)
 import pydeck as pdk
 from .models import StravaData
 from .decorators import user_has_zone_permission, user_has_permission
@@ -16,15 +17,19 @@ GREEN = settings.GREEN
 ALLOWED_YEARS = [2019, 2020, 2021, 2022, 2023, 2024, 2025]
 
 
-@login_required
 def welcome(request):
-    user = request.user
-    organization = user.get_first_organization()
-    permissions = [p.code for p in user.get_user_permissions()]
+    user = request.user if request.user.is_authenticated else None
+    organization = user.get_first_organization() if user else None
+    permissions = [p.code for p in user.get_user_permissions()] if user else []
+    
+    client_ip = get_client_ip(request)
+    location_data = get_location_from_ip(client_ip)
+    
     return render(request, "ciudadespendientes/welcome.html",
                   {'user': user,
                    'organization': organization,
-                   'permissions': permissions})
+                   'permissions': permissions,
+                   'loc': location_data.get('loc')})
 
 
 @login_required
