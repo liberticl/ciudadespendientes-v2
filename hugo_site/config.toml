@@ -71,8 +71,14 @@ buildFuture = true
 #   identifier = "registro"
 #   url = "/registro/"
 
+# [[menu.main]]
+# name = "Ciudades Pendientes"
+# weight = 600
+# identifier = "cp-web"
+# url = "https://v2.ciudadespendientes.cl/"
+
 [[menu.main]]
-name = "Ciudades Pendientes"
-weight = 600
-identifier = "cp-web"
-url = "https://v2.ciudadespendientes.cl/"
+name = "Aplicaciones"
+weight = 700
+identifier = "aplicaciones"
+url = "/aplicaciones/"

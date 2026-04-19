@@ -1,10 +1,11 @@
 {% extends 'base.html' %} <!-- Hereda de base.html -->
+{% load static %}
 
 {% block content %}
 <div id="content" style="padding: 50px 0;">
     <div class="container text-center">
         <div class="page-not-found">
-            <img src="../static/ciudadespendientes/logo_andes.png" alt="Responsive image" width="30%" class="mb-4">
+            <img src="{% static 'ciudadespendientes/logo_andes.png' %}" alt="Responsive image" width="30%" class="mb-4">
             <h1 style="font-size: 4rem; font-weight: bold; color: #c32c1b;">404</h1>
             <h3>¡Ups!<br>Te equivocaste de página</h3>
             <p class="text-muted mb-3">Lo sentimos, la página que estás buscando no existe o fue removida.</p>
