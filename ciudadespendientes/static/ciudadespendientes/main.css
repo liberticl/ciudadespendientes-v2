@@ -163,6 +163,8 @@ body {
   padding: 0 2%;
   text-align: center;
   background-color: #fff;
+  max-width: 60%;
+  margin: 0 auto;
 }
 
 /* Custom page CSS */
