@@ -80,5 +80,5 @@ buildFuture = true
 [[menu.main]]
 name = "Aplicaciones"
 weight = 700
-identifier = "aplicaciones"
-url = "/aplicaciones/"
+identifier = "apps"
+url = "/apps/"
